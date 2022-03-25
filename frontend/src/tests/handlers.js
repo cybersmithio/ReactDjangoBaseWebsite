@@ -1,7 +1,8 @@
 import { rest } from "msw";
+import { REGISTRATION_ENDPOINT } from "../constants/urls";
 
 export const handlers = [
-  rest.post("http://localhost/registration", (req, res, ctx) => {
+  rest.post(REGISTRATION_ENDPOINT, (req, res, ctx) => {
     if (
       req.body.name === "James Smith" &&
       req.body.email === "james@example.com" &&
