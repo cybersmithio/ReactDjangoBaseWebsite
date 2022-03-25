@@ -67,4 +67,23 @@ test("Happy path test", async () => {
   userEvent.clear(confirmPassword);
   userEvent.type(confirmPassword, "LetMeIn1234!");
   expect(registerButton).toBeEnabled();
+
+  userEvent.click(registerButton);
+
+  //const loadingText = await screen.findByText(/loading/i);
+  //expect(loadingText).toBeInTheDocument();
+
+  const verifyEmailText = await screen.findByRole("heading", {
+    name: /Verify Email/i,
+  });
+  expect(verifyEmailText).toBeInTheDocument();
+
+  expect(
+    screen.getByText(/A verification email has been sent to james@example.com/i)
+  ).toBeInTheDocument();
+  expect(
+    screen.getByText(
+      /Please click on the link in the email to verify your account/i
+    )
+  ).toBeInTheDocument();
 });
