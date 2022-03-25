@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { checkPasswordComplexity } from "../../utilities";
+import {
+  checkPasswordComplexity,
+  checkEmailAddressFormat,
+} from "../../utilities";
 import Alert from "react-bootstrap/Alert";
 
 function RegistrationPage() {
@@ -23,7 +26,11 @@ function RegistrationPage() {
       setPasswordGood(false);
     }
     if (name && email && passwordGood) {
-      setSubmitButtonEnabled(true);
+      if (checkEmailAddressFormat(email)) {
+        setSubmitButtonEnabled(true);
+      } else {
+        setSubmitButtonEnabled(false);
+      }
     } else {
       setSubmitButtonEnabled(false);
     }

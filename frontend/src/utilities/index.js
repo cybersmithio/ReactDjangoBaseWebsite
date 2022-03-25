@@ -27,3 +27,10 @@ export function checkPasswordComplexity(password, confirmPassword) {
   }
   return retval;
 }
+
+export function checkEmailAddressFormat(email) {
+  if (/^[^@]+@[A-Za-z0-9\-]+\.[A-Za-z0-9]/.test(email)) {
+    return true;
+  }
+  return false;
+}
