@@ -7,6 +7,7 @@ import {
 } from "../../utilities";
 import Alert from "react-bootstrap/Alert";
 import axios from "axios";
+import { REGISTRATION_ENDPOINT } from "../../constants/urls";
 
 function RegistrationPage() {
   const [name, setName] = useState("");
@@ -47,7 +48,7 @@ function RegistrationPage() {
       };
       axios
         .post(
-          "http://localhost/registration",
+          REGISTRATION_ENDPOINT,
           {
             email: email,
             password: password,
