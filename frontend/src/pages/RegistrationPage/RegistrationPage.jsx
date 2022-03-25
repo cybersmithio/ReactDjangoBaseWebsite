@@ -1,13 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { checkPasswordComplexity } from "../../utilities";
+import Alert from "react-bootstrap/Alert";
 
 function RegistrationPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  var registerButtonEnabled = email && password && name && confirmPassword;
+  const [submitButtonEnabled, setSubmitButtonEnabled] = useState(false);
+  const [passwordGood, setPasswordGood] = useState(false);
+  const [passwordTyped, setPasswordTyped] = useState(false);
+
+  useEffect(() => {
+    if (password || confirmPassword) {
+      setPasswordTyped(true);
+    }
+    if (checkPasswordComplexity(password, confirmPassword).length === 0) {
+      setPasswordGood(true);
+    } else {
+      setPasswordGood(false);
+    }
+    if (name && email && passwordGood) {
+      setSubmitButtonEnabled(true);
+    } else {
+      setSubmitButtonEnabled(false);
+    }
+  }, [name, email, password, confirmPassword, passwordGood]);
 
   return (
     <Container>
@@ -51,10 +71,29 @@ function RegistrationPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </Form.Group>
+
+            {passwordTyped ? (
+              passwordGood ? (
+                <div>Password complexity is good</div>
+              ) : (
+                <Alert variant="danger" style={{ backgroundColor: "yellow" }}>
+                  {checkPasswordComplexity(password, confirmPassword).map(
+                    (e) => {
+                      if (e) {
+                        return <li key={e}>{e}</li>;
+                      }
+                    }
+                  )}
+                </Alert>
+              )
+            ) : (
+              <div></div>
+            )}
+
             <Button
               type="submit"
               variant="primary"
-              disabled={!registerButtonEnabled}
+              disabled={!submitButtonEnabled}
             >
               Register
             </Button>
