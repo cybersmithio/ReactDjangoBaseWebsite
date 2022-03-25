@@ -6,6 +6,7 @@ import {
   checkEmailAddressFormat,
 } from "../../utilities";
 import Alert from "react-bootstrap/Alert";
+import axios from "axios";
 
 function RegistrationPage() {
   const [name, setName] = useState("");
@@ -39,9 +40,31 @@ function RegistrationPage() {
     }
 
     if (loading) {
-      setResults(true);
-      setLoading(false);
-      setSuccess(true);
+      const req_config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      axios
+        .post(
+          "http://localhost/registration",
+          {
+            email: email,
+            password: password,
+            name: name,
+          },
+          req_config
+        )
+        .then((response) => {
+          setResults(true);
+          setLoading(false);
+          setSuccess(true);
+        })
+        .catch((error) => {
+          setResults(true);
+          setLoading(false);
+          setSuccess(false);
+        });
     }
   }, [
     loading,
