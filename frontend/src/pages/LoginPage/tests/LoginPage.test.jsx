@@ -42,3 +42,35 @@ test("User can log in", async () => {
   const homepageText = await screen.findByText(/Welcome to the HomePage/i);
   expect(homepageText).toBeInTheDocument();
 });
+
+test("User cannot log in", async () => {
+  render(<App />);
+
+  const loginLink = await screen.findByRole("link", { name: /login/i });
+  expect(loginLink).toBeInTheDocument();
+  userEvent.click(loginLink);
+
+  const emailField = await screen.findByRole("textbox", {
+    name: /email address/i,
+  });
+  expect(emailField).toBeInTheDocument();
+  const passwordField = await screen.findByLabelText(/password/i);
+  expect(passwordField).toBeInTheDocument();
+  const loginButton = await screen.findByRole("button", { name: /log in/i });
+  expect(loginButton).toBeInTheDocument();
+  expect(loginButton).toBeDisabled();
+
+  userEvent.clear(emailField);
+  userEvent.type(emailField, "james@example.com");
+  userEvent.clear(passwordField);
+  userEvent.type(passwordField, "WrongPassword!");
+  userEvent.click(loginButton);
+  expect(loginButton).toBeEnabled();
+
+  const errorSigningIn = await screen.findByText(/Error Logging In/i);
+  expect(errorSigningIn).toBeInTheDocument();
+
+  expect(emailField).toBeInTheDocument();
+  expect(passwordField).toBeInTheDocument();
+  expect(loginButton).toBeEnabled();
+});

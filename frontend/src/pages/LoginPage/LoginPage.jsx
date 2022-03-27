@@ -4,6 +4,7 @@ import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { useUserDetails } from "../../context/UserContext";
 import axios from "axios";
 import { LOGIN_ENDPOINT } from "../../constants/urls";
+import Alert from "react-bootstrap/Alert";
 
 function LoginPage({ history }) {
   const [email, setEmail] = useState("");
@@ -60,6 +61,13 @@ function LoginPage({ history }) {
       <Row className="justify-content-md-center">
         <Col>
           <h1>Log In</h1>
+          {error ? (
+            <Alert variant="danger" style={{ backgroundColor: "red" }}>
+              Error Logging In
+            </Alert>
+          ) : (
+            <div />
+          )}
           <Form onSubmit={submitHandler}>
             <Form.Group controlId="email">
               <Form.Label>Email Address</Form.Label>
