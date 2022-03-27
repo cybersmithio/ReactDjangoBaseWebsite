@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage/HomePage";
 import Header from "./components/Header";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
+import VerificationPage from "./pages/VerificationPage/VerificationPage";
 
 function App() {
   return (
@@ -16,6 +17,10 @@ function App() {
           <Route path="/" component={HomePage} exact />
           <Route path="/login" component={LoginPage} exact />
           <Route path="/register" component={RegistrationPage} exact />
+          <Route
+            path="/verifyEmail/:verifySecret"
+            component={VerificationPage}
+          />
         </Container>
       </main>
       <Footer />
