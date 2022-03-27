@@ -177,7 +177,7 @@ function RegistrationPage() {
           </Row>
           <Row>
             <Col>
-              <Link to="login">Sign In</Link> if you have an account already!
+              <Link to="login">Log In</Link> if you have an account already!
             </Col>
           </Row>
         </Container>
