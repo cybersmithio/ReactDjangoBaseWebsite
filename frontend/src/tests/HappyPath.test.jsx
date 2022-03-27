@@ -11,8 +11,8 @@ test("Happy path test", async () => {
   expect(loginLink).toBeInTheDocument();
   userEvent.click(loginLink);
 
-  const signInText = await screen.findByRole("heading", { name: /sign in/i });
-  expect(signInText).toBeInTheDocument();
+  const loginText = await screen.findByRole("heading", { name: /log in/i });
+  expect(loginText).toBeInTheDocument();
 
   const emailField = await screen.findByRole("textbox", {
     name: /email address/i,
@@ -22,9 +22,9 @@ test("Happy path test", async () => {
   const passwordField = await screen.findByLabelText(/password/i);
   expect(passwordField).toBeInTheDocument();
 
-  const signInButton = await screen.findByRole("button", { name: /sign in/i });
-  expect(signInButton).toBeInTheDocument();
-  expect(signInButton).toBeDisabled();
+  const loginButton = await screen.findByRole("button", { name: /log in/i });
+  expect(loginButton).toBeInTheDocument();
+  expect(loginButton).toBeDisabled();
 
   const registerLink = await screen.findByRole("link", { name: /register/i });
   expect(registerLink).toBeInTheDocument();
@@ -49,8 +49,10 @@ test("Happy path test", async () => {
   const confirmPassword = await screen.findByLabelText(/confirm password/i);
   expect(confirmPassword).toBeInTheDocument();
 
-  const signInLink = await screen.findByRole("link", { name: /sign in/i });
-  expect(signInLink).toBeInTheDocument();
+  const registrationLinkToLogin = await screen.findByRole("link", {
+    name: /log in/i,
+  });
+  expect(registrationLinkToLogin).toBeInTheDocument();
 
   const registerButton = await screen.findByRole("button", {
     name: /register/i,
