@@ -10,6 +10,7 @@ beforeAll(() => server.listen());
 
 afterEach(() => {
   server.resetHandlers();
+  localStorage.clear();
 });
 
 afterAll(() => server.close());

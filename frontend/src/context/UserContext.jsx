@@ -12,10 +12,33 @@ export function useUserDetails() {
 }
 
 export function UserDetailsProvider(props) {
+  const userDetailsFromStorage = localStorage.getItem("userDetails")
+    ? JSON.parse(localStorage.getItem("userDetails"))
+    : null;
+
+  var accessTokenFromStorage = false;
+  var refreshTokenFromStorage = false;
+  var nameFromStorage = false;
+
+  if (userDetailsFromStorage) {
+    if (userDetailsFromStorage.access) {
+      accessTokenFromStorage = userDetailsFromStorage.access;
+      const jwt_decoded = jwt_decode(accessTokenFromStorage);
+
+      nameFromStorage = jwt_decoded.name;
+    } else {
+      accessTokenFromStorage = false;
+      nameFromStorage = false;
+    }
+    refreshTokenFromStorage = userDetailsFromStorage.refresh
+      ? userDetailsFromStorage.refresh
+      : false;
+  }
+
   const [userDetails, setUserDetails] = useState({
-    accessToken: false,
-    refreshToken: false,
-    name: false,
+    accessToken: accessTokenFromStorage,
+    refreshToken: refreshTokenFromStorage,
+    name: nameFromStorage,
   });
 
   const value = useMemo(() => {
