@@ -64,8 +64,8 @@ test("User cannot log in", async () => {
   userEvent.type(emailField, "james@example.com");
   userEvent.clear(passwordField);
   userEvent.type(passwordField, "WrongPassword!");
-  userEvent.click(loginButton);
   expect(loginButton).toBeEnabled();
+  userEvent.click(loginButton);
 
   const errorSigningIn = await screen.findByText(/Error Logging In/i);
   expect(errorSigningIn).toBeInTheDocument();
