@@ -48,8 +48,12 @@ export function UserDetailsProvider(props) {
       newUserDetails.accessToken = accessToken;
       newUserDetails.refreshToken = refreshToken;
 
-      const jwt_decoded = jwt_decode(newUserDetails.accessToken);
-      newUserDetails.name = jwt_decoded.name;
+      if (newUserDetails.accessToken) {
+        const jwt_decoded = jwt_decode(newUserDetails.accessToken);
+        newUserDetails.name = jwt_decoded.name;
+      } else {
+        newUserDetails.name = false;
+      }
 
       setUserDetails(newUserDetails);
     }
