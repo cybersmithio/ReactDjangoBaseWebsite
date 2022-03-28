@@ -8,6 +8,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 import VerificationPage from "./pages/VerificationPage/VerificationPage";
 import { UserDetailsProvider } from "./context/UserContext";
+import LogoutPage from "./pages/LogoutPage/LogoutPage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
               path="/verifyEmail/:verifySecret"
               component={VerificationPage}
             />
+            <Route path="/logout" component={LogoutPage} />
           </Container>
         </main>
         <Footer />

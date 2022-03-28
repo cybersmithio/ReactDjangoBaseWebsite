@@ -13,22 +13,29 @@ function Header() {
           <LinkContainer to="/">
             <Navbar.Brand>React Django Base Web Site</Navbar.Brand>
           </LinkContainer>
-          <Nav className="mr-auto">
-            {userDetails.accessToken ? (
+          {userDetails.accessToken ? (
+            <Nav className="mr-auto">
               <LinkContainer to="/profile">
                 <Nav.Link>
                   <i className="fas fa-user"></i>
                   {userDetails.name}
                 </Nav.Link>
               </LinkContainer>
-            ) : (
+              <LinkContainer to="/logout">
+                <Nav.Link>
+                  <i className="fas fa-sign-out-alt"></i>Logout
+                </Nav.Link>
+              </LinkContainer>
+            </Nav>
+          ) : (
+            <Nav className="mr-auto">
               <LinkContainer to="/login">
                 <Nav.Link>
                   <i className="fas fa-user"></i>Login
                 </Nav.Link>
               </LinkContainer>
-            )}
-          </Nav>
+            </Nav>
+          )}
         </Container>
       </Navbar>
     </header>
