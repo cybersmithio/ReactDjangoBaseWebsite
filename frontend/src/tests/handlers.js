@@ -3,6 +3,7 @@ import {
   REGISTRATION_ENDPOINT,
   VERIFY_EMAIL_ENDPOINT,
   LOGIN_ENDPOINT,
+  PROFILE_UPDATE_ENDPOINT,
 } from "../constants/urls";
 
 export const handlers = [
@@ -45,5 +46,40 @@ export const handlers = [
     }
 
     return res(ctx.status(500));
+  }),
+
+  rest.put(PROFILE_UPDATE_ENDPOINT, (req, res, ctx) => {
+    if (
+      req.body.name === "Mr James S. Smith" ||
+      req.body.password === "IWantIn123!"
+    ) {
+      const sign = require("jwt-encode");
+      return res(
+        ctx.json({
+          access: sign(
+            {
+              token_type: "access",
+              exp: "9999999999",
+              jti: "1234567898396572",
+              user_id: 1,
+              name: req.body.name,
+            },
+            "mysecret"
+          ),
+          refresh: sign(
+            {
+              token_type: "refresh",
+              exp: "9999999999",
+              jti: "1234567898396572",
+              user_id: 1,
+              name: req.body.name,
+            },
+            "mysecret"
+          ),
+        })
+      );
+    } else {
+      return res(ctx.status(500));
+    }
   }),
 ];
