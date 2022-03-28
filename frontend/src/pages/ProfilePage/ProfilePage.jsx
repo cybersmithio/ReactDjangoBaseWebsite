@@ -10,12 +10,16 @@ function ProfilePage({ history }) {
 
   const [formName, setFormName] = useState(userDetails.name);
 
+  const submitHandler = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <Container>
       <Row>
         <Col>
           <h1>User Profile</h1>
-          <Form>
+          <Form onSubmit={submitHandler}>
             <Form.Group controlId="name">
               <Form.Label>Full Name</Form.Label>
               <Form.Control
