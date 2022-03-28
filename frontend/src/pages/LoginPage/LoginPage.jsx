@@ -56,54 +56,58 @@ function LoginPage({ history }) {
     setLoading(true);
   };
 
-  return (
-    <Container>
-      <Row className="justify-content-md-center">
-        <Col>
-          <h1>Log In</h1>
-          {error ? (
-            <Alert variant="danger" style={{ backgroundColor: "red" }}>
-              Error Logging In
-            </Alert>
-          ) : (
-            <div />
-          )}
-          <Form onSubmit={submitHandler}>
-            <Form.Group controlId="email">
-              <Form.Label>Email Address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group controlId="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Enter Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={!submitButtonEnabled}
-            >
-              Log In
-            </Button>
-          </Form>
-          <Row className="py-3">
-            <Col>
-              Are you a new member? <Link to="/register/">Register</Link>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-    </Container>
-  );
+  if (loading) {
+    return <div>Loading</div>;
+  } else {
+    return (
+      <Container>
+        <Row className="justify-content-md-center">
+          <Col>
+            <h1>Log In</h1>
+            {error ? (
+              <Alert variant="danger" style={{ backgroundColor: "red" }}>
+                Error Logging In
+              </Alert>
+            ) : (
+              <div />
+            )}
+            <Form onSubmit={submitHandler}>
+              <Form.Group controlId="email">
+                <Form.Label>Email Address</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Enter Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
+              <Form.Group controlId="password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Enter Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={!submitButtonEnabled}
+              >
+                Log In
+              </Button>
+            </Form>
+            <Row className="py-3">
+              <Col>
+                Are you a new member? <Link to="/register/">Register</Link>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
 }
 
 export default LoginPage;
