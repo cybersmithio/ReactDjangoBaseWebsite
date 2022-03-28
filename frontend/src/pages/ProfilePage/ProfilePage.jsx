@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { useUserDetails } from "../../context/UserContext";
 
-function ProfilePage() {
+function ProfilePage({ history }) {
   const [userDetails] = useUserDetails();
+  if (!userDetails.accessToken) {
+    history.push("/login");
+  }
+
   const [formName, setFormName] = useState(userDetails.name);
 
   return (
