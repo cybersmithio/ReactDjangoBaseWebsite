@@ -1,17 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { useUserDetails } from "../../context/UserContext";
+import { PROFILE_UPDATE_ENDPOINT } from "../../constants/urls";
+import axios from "axios";
 
 function ProfilePage({ history }) {
-  const [userDetails] = useUserDetails();
+  const [userDetails, updateUserDetails] = useUserDetails();
   if (!userDetails.accessToken) {
     history.push("/login");
   }
+  const [loading, setLoading] = useState(false);
 
   const [formName, setFormName] = useState(userDetails.name);
 
+  useEffect(() => {
+    if (loading) {
+      const req_config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userDetails.accessToken}`,
+        },
+      };
+      axios
+        .put(
+          PROFILE_UPDATE_ENDPOINT,
+          {
+            name: formName,
+          },
+          req_config
+        )
+        .then((response) => {
+          updateUserDetails(response.data["access"], response.data["refresh"]);
+          localStorage.setItem(
+            "userDetails",
+            JSON.stringify({
+              access: response.data["access"],
+              refresh: response.data["refresh"],
+            })
+          );
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+        });
+    }
+  }, [loading]);
+
   const submitHandler = (e) => {
     e.preventDefault();
+    setLoading(true);
   };
 
   return (

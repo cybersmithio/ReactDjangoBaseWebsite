@@ -6,3 +6,6 @@ export const REGISTRATION_ENDPOINT = BACKEND_URL + "api/users/register/";
 export const VERIFY_EMAIL_ENDPOINT = BACKEND_URL + "api/users/email/verify/";
 
 export const LOGIN_ENDPOINT = BACKEND_URL + "api/users/token/";
+
+export const PROFILE_UPDATE_ENDPOINT =
+  BACKEND_URL + "api/users/profile/update/";
