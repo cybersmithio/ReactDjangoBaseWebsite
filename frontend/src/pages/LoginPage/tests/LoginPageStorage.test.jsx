@@ -4,6 +4,7 @@ import App from "../../../App";
 import jwt_decode from "jwt-decode";
 
 test("Local storage is being set by user context", async () => {
+  localStorage.clear();
   render(<App />);
 
   const loginLink = await screen.findByRole("link", { name: /login/i });
