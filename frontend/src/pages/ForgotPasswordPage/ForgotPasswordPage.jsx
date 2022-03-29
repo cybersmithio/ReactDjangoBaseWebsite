@@ -3,6 +3,7 @@ import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { FORGOT_PASSWORD_ENDPOINT } from "../../constants/urls";
+import { checkEmailAddressFormat } from "../../utilities";
 
 function ForgotPasswordPage() {
   const [formEmail, setFormEmail] = useState();
@@ -12,7 +13,7 @@ function ForgotPasswordPage() {
   const [resetSuccess, setResetSuccess] = useState(false);
 
   useEffect(() => {
-    if (formEmail) {
+    if (checkEmailAddressFormat(formEmail)) {
       setSubmitButtonEnabled(true);
     } else {
       setSubmitButtonEnabled(false);
