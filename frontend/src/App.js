@@ -10,6 +10,7 @@ import VerificationPage from "./pages/VerificationPage/VerificationPage";
 import { UserDetailsProvider } from "./context/UserContext";
 import LogoutPage from "./pages/LogoutPage/LogoutPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotPasswordPage";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             />
             <Route path="/logout" component={LogoutPage} />
             <Route path="/profile" component={ProfilePage} />
+            <Route path="/forgotPassword" component={ForgotPasswordPage} />
           </Container>
         </main>
         <Footer />

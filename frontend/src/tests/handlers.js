@@ -4,6 +4,7 @@ import {
   VERIFY_EMAIL_ENDPOINT,
   LOGIN_ENDPOINT,
   PROFILE_UPDATE_ENDPOINT,
+  FORGOT_PASSWORD_ENDPOINT,
 } from "../constants/urls";
 
 export const handlers = [
@@ -81,5 +82,8 @@ export const handlers = [
     } else {
       return res(ctx.status(500));
     }
+  }),
+  rest.post(FORGOT_PASSWORD_ENDPOINT, (req, res, ctx) => {
+    return res(ctx.status(200));
   }),
 ];

@@ -103,6 +103,9 @@ function LoginPage({ history }) {
               <Col>
                 Are you a new member? <Link to="/register/">Register</Link>
               </Col>
+              <Col>
+                <Link to="/forgotPassword/">Forgot Password</Link>
+              </Col>
             </Row>
           </Col>
         </Row>
