@@ -14,6 +14,8 @@ function ProfilePage({ history }) {
   const [error, setError] = useState(false);
 
   const [formName, setFormName] = useState(userDetails.name);
+  const [formPassword, setFormPassword] = useState("");
+  const [formConfirmPassword, setFormConfirmPassword] = useState("");
 
   useEffect(() => {
     if (loading) {
@@ -28,6 +30,7 @@ function ProfilePage({ history }) {
           PROFILE_UPDATE_ENDPOINT,
           {
             name: formName,
+            password: formPassword,
           },
           req_config
         )
@@ -84,11 +87,21 @@ function ProfilePage({ history }) {
               </Form.Group>
               <Form.Group controlId="password">
                 <Form.Label>Update Password</Form.Label>
-                <Form.Control type="password" placeholder="Update password" />
+                <Form.Control
+                  type="password"
+                  placeholder="Update password"
+                  value={formPassword}
+                  onChange={(e) => setFormPassword(e.target.value)}
+                />
               </Form.Group>
               <Form.Group controlId="confirmPassword">
                 <Form.Label>Confirm Password</Form.Label>
-                <Form.Control type="password" placeholder="Confirm password" />
+                <Form.Control
+                  type="password"
+                  placeholder="Confirm password"
+                  value={formConfirmPassword}
+                  onChange={(e) => setFormConfirmPassword(e.target.value)}
+                />
               </Form.Group>
               <Button type="submit" variant="primary">
                 Update
