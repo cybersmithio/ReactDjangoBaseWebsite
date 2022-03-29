@@ -53,7 +53,9 @@ function ForgotPasswordPage() {
     setResetSuccess(false);
   };
 
-  if (resetSuccess) {
+  if (loading) {
+    return <div>Loading</div>;
+  } else if (resetSuccess) {
     return (
       <Container>
         <Row>
