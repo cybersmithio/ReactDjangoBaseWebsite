@@ -4,6 +4,7 @@ import { useUserDetails } from "../../context/UserContext";
 import { PROFILE_UPDATE_ENDPOINT } from "../../constants/urls";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
+import { checkPasswordComplexity } from "../../utilities";
 
 function ProfilePage({ history }) {
   const [userDetails, updateUserDetails] = useUserDetails();
@@ -12,10 +13,30 @@ function ProfilePage({ history }) {
   }
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [passwordGood, setPasswordGood] = useState(false);
+  const [passwordTyped, setPasswordTyped] = useState(false);
 
   const [formName, setFormName] = useState(userDetails.name);
   const [formPassword, setFormPassword] = useState("");
   const [formConfirmPassword, setFormConfirmPassword] = useState("");
+
+  useEffect(() => {
+    if (formPassword || formConfirmPassword) {
+      setPasswordTyped(true);
+    }
+
+    if (passwordTyped) {
+      if (
+        checkPasswordComplexity(formPassword, formConfirmPassword).length === 0
+      ) {
+        setPasswordGood(true);
+      } else {
+        setPasswordGood(false);
+      }
+    } else {
+      setPasswordGood(true);
+    }
+  }, [formPassword, formConfirmPassword]);
 
   useEffect(() => {
     if (loading) {
@@ -103,7 +124,27 @@ function ProfilePage({ history }) {
                   onChange={(e) => setFormConfirmPassword(e.target.value)}
                 />
               </Form.Group>
-              <Button type="submit" variant="primary">
+
+              {passwordTyped ? (
+                passwordGood ? (
+                  <div>Password complexity is good</div>
+                ) : (
+                  <Alert variant="danger" style={{ backgroundColor: "yellow" }}>
+                    {checkPasswordComplexity(
+                      formPassword,
+                      formConfirmPassword
+                    ).map((e) => {
+                      if (e) {
+                        return <li key={e}>{e}</li>;
+                      }
+                    })}
+                  </Alert>
+                )
+              ) : (
+                <div />
+              )}
+
+              <Button type="submit" variant="primary" disabled={!passwordGood}>
                 Update
               </Button>
             </Form>
