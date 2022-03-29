@@ -40,11 +40,11 @@ function ForgotPasswordPage() {
           setResetSuccess(true);
         })
         .catch((error) => {
-          setError(true);
           setLoading(false);
+          setError(true);
         });
     }
-  }, [formEmail, loading, error]);
+  }, [loading, error]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -62,6 +62,16 @@ function ForgotPasswordPage() {
               If your email is found, we will send you a link to reset your
               password.
             </p>
+          </Col>
+        </Row>
+      </Container>
+    );
+  } else if (error) {
+    return (
+      <Container>
+        <Row>
+          <Col>
+            <p>There was an error with the request. Please try again later.</p>
           </Col>
         </Row>
       </Container>
