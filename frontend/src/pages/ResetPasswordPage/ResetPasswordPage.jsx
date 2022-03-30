@@ -63,7 +63,9 @@ function ResetPasswordPage({ match }) {
     }
   }, [loading, password]);
 
-  if (error) {
+  if (loading) {
+    return <div>Loading</div>;
+  } else if (error) {
     return (
       <Container>
         <Row>
