@@ -3,6 +3,8 @@ import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { RESET_PASSWORD_ENDPOINT } from "../../constants/urls";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { checkPasswordComplexity } from "../../utilities";
+import Alert from "react-bootstrap/Alert";
 
 function ResetPasswordPage({ match }) {
   const [password, setPassword] = useState("");
@@ -11,6 +13,7 @@ function ResetPasswordPage({ match }) {
   const [loading, setLoading] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [passwordTyped, setPasswordTyped] = useState(false);
 
   var resetSecret = "";
   try {
@@ -20,10 +23,15 @@ function ResetPasswordPage({ match }) {
   }
 
   useEffect(() => {
-    if (password === confirmPassword && password) {
-      setSubmitButtonEnabled(true);
-    } else {
-      setSubmitButtonEnabled(false);
+    if (password || confirmPassword) {
+      setPasswordTyped(true);
+    }
+    if (passwordTyped) {
+      if (checkPasswordComplexity(password, confirmPassword).length === 0) {
+        setSubmitButtonEnabled(true);
+      } else {
+        setSubmitButtonEnabled(false);
+      }
     }
   }, [password, confirmPassword]);
 
@@ -128,6 +136,27 @@ function ResetPasswordPage({ match }) {
                 Reset Password
               </Button>
             </Form>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            {passwordTyped ? (
+              submitButtonEnabled ? (
+                <div>Password complexity is good</div>
+              ) : (
+                <Alert variant="danger" style={{ backgroundColor: "yellow" }}>
+                  {checkPasswordComplexity(password, confirmPassword).map(
+                    (e) => {
+                      if (e) {
+                        return <li key={e}>{e}</li>;
+                      }
+                    }
+                  )}
+                </Alert>
+              )
+            ) : (
+              <div></div>
+            )}
           </Col>
         </Row>
       </Container>
