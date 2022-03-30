@@ -5,6 +5,7 @@ import {
   LOGIN_ENDPOINT,
   PROFILE_UPDATE_ENDPOINT,
   FORGOT_PASSWORD_ENDPOINT,
+  RESET_PASSWORD_ENDPOINT,
 } from "../constants/urls";
 
 export const handlers = [
@@ -85,5 +86,14 @@ export const handlers = [
   }),
   rest.post(FORGOT_PASSWORD_ENDPOINT, (req, res, ctx) => {
     return res(ctx.status(200));
+  }),
+  rest.post(RESET_PASSWORD_ENDPOINT, (req, res, ctx) => {
+    if (
+      req.body.reset_secret === "12345678901234567890123456789012" &&
+      req.body.password === "MyNewPassword123!"
+    ) {
+      return res(ctx.status(200));
+    }
+    return res(ctx.status(500));
   }),
 ];

@@ -11,6 +11,7 @@ import { UserDetailsProvider } from "./context/UserContext";
 import LogoutPage from "./pages/LogoutPage/LogoutPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage/ResetPasswordPage";
 
 function App() {
   return (
@@ -29,6 +30,10 @@ function App() {
             <Route path="/logout" component={LogoutPage} />
             <Route path="/profile" component={ProfilePage} />
             <Route path="/forgotPassword" component={ForgotPasswordPage} />
+            <Route
+              path="/resetPassword/:resetSecret"
+              component={ResetPasswordPage}
+            />
           </Container>
         </main>
         <Footer />
