@@ -1,1 +1,11 @@
 .vscode/
+env/
+__pycache__/
+*.pyc
+db.sqlite3
+geckodriver.log
+.env
+.env.bat
+*.pem
+static/
+staticfiles/
