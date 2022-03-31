@@ -15,7 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+import os
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
 ]
+
+if os.getenv('DJANGO_ADMIN') is not None and os.getenv('DJANGO_ADMIN') == 'True':
+    print("Django admin site enabled")
+    urlpatterns.insert(0,path('admin/', admin.site.urls),)
+else:
+        print("Django admin site disabled")
+
