@@ -36,6 +36,8 @@ class RegisterUserAPITests(UserTestCase):
         self.assertFalse(user.is_superuser)
         self.assertTrue(user.sent_verification_email)
         self.assertFalse(user.verified_email)
+        self.assertNotEqual(user.verification_email_secret, "")
+        self.assertIsNotNone(user.verification_email_secret)
  
     def test_missing_name_returns_bad_request(self, mock_send_mail):
         response = self.client.post('/api/users/register/', data={'email': 'james@example.com', 'password': 'LetMeIn123!'})
@@ -63,10 +65,12 @@ class RegisterUserAPITests(UserTestCase):
         self.assertEqual(mock_send_mail.called, True)
         (subject, body, from_email, to_list), kwargs = mock_send_mail.call_args
         self.assertEqual(subject, f"Verify your user account for {settings.WEB_SITE_NAME}")
-        self.assertEqual(body, f'To verify your user account for {settings.WEB_SITE_NAME}, please go to {settings.VERIFICATION_URL}')
+        self.assertEqual(body, f'To verify your user account for {settings.WEB_SITE_NAME}, please go to {settings.VERIFICATION_URL}{user.verification_email_secret}')
+        self.assertRegex(body, f'To verify your user account for {settings.WEB_SITE_NAME}, please go to {settings.VERIFICATION_URL}[0-9A-Za-z]{{32}}$')  
         self.assertEqual(from_email, settings.SENDER_EMAIL)
         self.assertEqual(to_list,['james@example.com'])
         self.assertIn("html_message", kwargs)
         for key, value in kwargs.items():
             if key == "html_message":
-                self.assertEqual(value, f'Please <a href="{settings.VERIFICATION_URL}">click this link</a> to verify your user account for {settings.WEB_SITE_NAME}.')
+                self.assertEqual(value, f'Please <a href="{settings.VERIFICATION_URL}{user.verification_email_secret}">click this link</a> to verify your user account for {settings.WEB_SITE_NAME}.')
+                self.assertRegex(value, f'Please <a href="{settings.VERIFICATION_URL}[0-9A-Za-z]{{32}}">click this link</a> to verify your user account for {settings.WEB_SITE_NAME}\.$')
