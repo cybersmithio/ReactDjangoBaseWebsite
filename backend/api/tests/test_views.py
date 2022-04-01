@@ -45,3 +45,9 @@ class RegisterUserAPITests(UserTestCase):
     def test_missing_password_returns_bad_request(self):
         response = self.client.post('/api/users/register/', data={'name': 'James Smith', 'email': 'james@example.com'})
         self.assertEqual(response.status_code, 400)
+    
+    def test_existing_user_returns_error_message(self):
+        self.helper_create_user()
+        response = self.client.post('/api/users/register/', data={'name': 'James Smith', 'email': 'james@example.com', 'password': 'LetMeIn123!'})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['message'], "user already exists")
