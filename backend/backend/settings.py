@@ -123,3 +123,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+WEB_SITE_NAME="React Django Base Website"
+VERIFICATION_URL="http://localhost:3000/verifyEmail/"
+SENDER_EMAIL="james@example.com"
