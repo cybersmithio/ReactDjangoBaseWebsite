@@ -4,7 +4,7 @@ __pycache__/
 *.pyc
 db.sqlite3
 geckodriver.log
-.env
+.env*
 .env.bat
 *.pem
 static/

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -124,6 +125,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-WEB_SITE_NAME="React Django Base Website"
-VERIFICATION_URL="http://localhost:3000/verifyEmail/"
-SENDER_EMAIL="james@example.com"
+WEB_SITE_NAME=os.getenv('DJANGO_WEB_SITE_NAME')
+VERIFICATION_URL=os.getenv('DJANGO_VERIFICATION_URL')
+SENDER_EMAIL=os.getenv('DJANGO_SENDER_EMAIL')
+EMAIL_HOST = os.getenv('DJANGO_EMAIL_HOST')
+EMAIL_PORT = os.getenv('DJANGO_EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('DJANGO_EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('DJANGO_EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
