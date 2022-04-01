@@ -14,8 +14,6 @@ User = get_user_model()
 
 @api_view(['POST'])
 def registerUser(request):
-    message={'message': 'user could not be registered'}
- 
     if 'password' in request.data and 'email' in request.data and 'name' in request.data:
         try:
             user = User.objects.create_user(
@@ -29,11 +27,9 @@ def registerUser(request):
                 verified_email=False
                 )
         except IntegrityError:
-            message={'message': 'user already exists'}
-            return Response(message,status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'user already exists'},status=status.HTTP_400_BAD_REQUEST)
         except:
-            message={'message': 'user could not be registered'}
-            return Response(message,status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'user could not be registered'},status=status.HTTP_400_BAD_REQUEST)
 
         try:
             send_mail(
@@ -49,11 +45,8 @@ def registerUser(request):
             user.save()
         except:
             print("send_mail exception:",sys.exc_info())
-            message={'message': 'Verification email could not be sent.'}
-            return Response(message,status=status.HTTP_400_BAD_REQUEST)
-        return Response(message,status=status.HTTP_200_OK)
-    else:
-        message={'message': 'user information missing'}
-    return Response(message,status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Verification email could not be sent.'},status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': 'user registered'},status=status.HTTP_200_OK)
+    return Response({'message': 'user information missing'},status=status.HTTP_400_BAD_REQUEST)
  
 
