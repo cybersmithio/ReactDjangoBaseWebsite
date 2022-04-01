@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.db.utils import IntegrityError
 
 User = get_user_model()
 
@@ -25,6 +26,8 @@ def registerUser(request):
                 verified_email=False
                 )
             return Response(status=status.HTTP_200_OK)
+        except IntegrityError:
+            message={'message': 'user already exists'}
         except:
             message={'message': 'user could not be registered'}
     else:
