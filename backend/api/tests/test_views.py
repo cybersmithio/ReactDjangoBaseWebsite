@@ -151,3 +151,11 @@ class UserAuthenticationTests(UserTestCase):
     def test_user_login_api_fails_with_get_request(self):
         response = self.client.get('/api/users/token/')
         self.assertEqual(response.status_code, 405)
+
+    def test_user_jwt_expires_in_7_days(self):
+        self.helper_create_user()
+        response = self.client.post('/api/users/token/', data={'email': 'james@example.com', 'password': 'LetMeIn123!'})
+        decoded = jwt.decode(response.data['access'], settings.SECRET_KEY, algorithms=["HS256"])
+        self.assertIn("exp", decoded)
+        self.assertIn("iat", decoded)
+        self.assertTrue((decoded['exp']-decoded['iat'] >= 604800))
