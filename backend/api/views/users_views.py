@@ -10,8 +10,22 @@ from django.core.mail import send_mail
 from django.conf import settings
 import sys
 from django.utils.crypto import get_random_string
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 User = get_user_model()
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+ 
+        token['name'] = user.name
+ 
+        return token
+ 
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 @api_view(['POST'])
 def registerUser(request):
