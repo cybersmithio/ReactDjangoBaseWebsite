@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from unittest.mock import patch
 from django.conf import settings 
- 
+import jwt
+
 User = get_user_model()
  
 class UserTestCase(TestCase):
@@ -107,3 +108,46 @@ class VerifyUserEmailAPITests(UserTestCase):
         user = User.objects.get(email='james@example.com')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message'], "unable to verify user")
+
+class UserAuthenticationTests(UserTestCase):
+    def test_user_can_login(self):
+        self.helper_create_user()
+        response = self.client.post('/api/users/token/', data={'email': 'james@example.com', 'password': 'LetMeIn123!'})
+        self.assertEqual(response.status_code, 200)
+ 
+    def test_user_with_bad_password(self):
+        self.helper_create_user()
+        response = self.client.post('/api/users/token/',data={'email': 'james@example.com', 'password': 'password'})
+        self.assertEqual(response.status_code, 401)
+ 
+    def test_user_login_api_returns_jwt(self):
+        self.helper_create_user()
+        response = self.client.post('/api/users/token/', data={'email': 'james@example.com', 'password': 'LetMeIn123!'})
+        self.assertIsNotNone(response.data['access'])
+ 
+    def test_user_jwt_has_name(self):
+        self.helper_create_user()
+        response = self.client.post('/api/users/token/', data={'email': 'james@example.com', 'password': 'LetMeIn123!'})
+        decoded = jwt.decode(response.data['access'], settings.SECRET_KEY, algorithms=["HS256"])
+        self.assertIn("name", decoded)
+        self.assertEqual(decoded['name'],"James Smith")
+ 
+    def test_user_login_api_fails_without_email_and_password(self):
+        response = self.client.post('/api/users/token/')
+        self.assertEqual(response.status_code, 400)
+ 
+    def test_user_login_api_fails_without_email(self):
+        response = self.client.post('/api/users/token/',data={'password': 'LetMeIn123!'})
+        self.assertEqual(response.status_code, 400)
+ 
+    def test_user_login_api_fails_without_password(self):
+        response = self.client.post('/api/users/token/',data={'email': 'jsmith'})
+        self.assertEqual(response.status_code, 400)
+ 
+    def test_user_login_api_fails_with_non_existent_email(self):
+        response = self.client.post('/api/users/token/',data={'email': 'jsmith', 'password': 'LetMeIn123!'})
+        self.assertEqual(response.status_code, 401)
+ 
+    def test_user_login_api_fails_with_get_request(self):
+        response = self.client.get('/api/users/token/')
+        self.assertEqual(response.status_code, 405)
