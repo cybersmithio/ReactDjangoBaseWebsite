@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -12,6 +12,8 @@ import sys
 from django.utils.crypto import get_random_string
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import IsAuthenticated
+from api.serializers.user_serializers import UserSerializer
 
 User = get_user_model()
 
@@ -77,3 +79,10 @@ def verifyUser(request, verification_secret):
         return Response({'message': 'user verified'},status=status.HTTP_200_OK)
     except:
         return Response({'message': 'unable to verify user'},status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def userProfile(request):
+    user = request.user
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)

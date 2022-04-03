@@ -16,6 +16,22 @@ class UserTestCase(TestCase):
             password=make_password('LetMeIn123!')
         )
         return user
+    
+    def helper_get_access_token(self):
+        response = self.client.post('/api/users/token/', data={'email': 'james@example.com', 'password': 'LetMeIn123!'})
+        return response.data['access']
+    
+    def helper_create_another_user(self):
+        user = User.objects.create(
+            name="Jim Smyth",
+            email="jim@example.com",
+            password=make_password('IWantIn123!')
+        )
+        return user
+ 
+    def helper_get_access_token_for_other_user(self):
+        response = self.client.post('/api/users/token/', data={'email': "jim@example.com", 'password': 'IWantIn123!'})
+        return response.data['access']    
 
 @patch('api.views.users_views.send_mail')
 class RegisterUserAPITests(UserTestCase):
@@ -159,3 +175,29 @@ class UserAuthenticationTests(UserTestCase):
         self.assertIn("exp", decoded)
         self.assertIn("iat", decoded)
         self.assertTrue((decoded['exp']-decoded['iat'] >= 604800))
+
+class UserProfileTests(UserTestCase):
+    def test_user_can_retrieve_their_profile(self):
+        self.helper_create_user()
+        access_token=self.helper_get_access_token()
+        response = self.client.get('/api/users/profile/', HTTP_AUTHORIZATION=f"Bearer {access_token}")
+        self.assertEqual(response.status_code, 200)
+ 
+    def test_user_profile_contains_name_and_email(self):
+        self.helper_create_user()
+        access_token=self.helper_get_access_token()
+        response = self.client.get('/api/users/profile/', HTTP_AUTHORIZATION=f"Bearer {access_token}")
+        self.assertEqual(response.data['name'], "James Smith")
+        self.assertEqual(response.data['email'], "james@example.com")
+ 
+    def test_unauthenticated_request_receives_error_for_profile(self):
+        self.helper_create_user()
+        response = self.client.get('/api/users/profile/')
+        self.assertEqual(response.status_code, 401)
+
+    def test_user_profile_contains_of_current_user(self):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        access_token=self.helper_get_access_token_for_other_user()
+        response = self.client.get('/api/users/profile/', HTTP_AUTHORIZATION=f"Bearer {access_token}")
+        self.assertEqual(response.data['name'], "Jim Smyth")
