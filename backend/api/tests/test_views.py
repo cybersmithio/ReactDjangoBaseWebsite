@@ -238,3 +238,32 @@ class UpdateUserProfileTests(UserTestCase):
         self.assertEqual(response.status_code, 401)
         response = self.client.post('/api/users/token/', data={'email': 'jim@example.com', 'password': 'IWantInNow123!'})
         self.assertEqual(response.status_code, 200)
+
+    def test_update_return_new_access_token(self):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        access_token=self.helper_get_access_token_for_other_user()
+        response = self.client.put('/api/users/profile/update/',{'name': 'Jimmy Smyth', 'password': 'IWantInNow123!'}, content_type="application/json", HTTP_AUTHORIZATION=f"Bearer {access_token}")
+        decoded = jwt.decode(response.data['access'], settings.SECRET_KEY, algorithms=["HS256"])
+        self.assertIn("token_type", decoded)
+        self.assertEqual(decoded['token_type'],"access")
+ 
+    def test_update_return_new_refresh_token(self):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        access_token=self.helper_get_access_token_for_other_user()
+        response = self.client.put('/api/users/profile/update/',{'name': 'Jimmy Smyth', 'password': 'IWantInNow123!'}, content_type="application/json", HTTP_AUTHORIZATION=f"Bearer {access_token}")
+        decoded = jwt.decode(response.data['refresh'], settings.SECRET_KEY, algorithms=["HS256"])
+        self.assertIn("token_type", decoded)
+        self.assertEqual(decoded['token_type'],"refresh")
+ 
+    def test_update_return_new_jwt_with_updated_name(self):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        access_token=self.helper_get_access_token_for_other_user()
+        response = self.client.put('/api/users/profile/update/',{'name': 'Jimmy Smyth', 'password': 'IWantInNow123!'}, content_type="application/json", HTTP_AUTHORIZATION=f"Bearer {access_token}")
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(response.data['access'])
+        decoded = jwt.decode(response.data['access'], settings.SECRET_KEY, algorithms=["HS256"])
+        self.assertIn("name", decoded)
+        self.assertEqual(decoded['name'],"Jimmy Smyth")
