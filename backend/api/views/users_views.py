@@ -14,6 +14,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from api.serializers.user_serializers import UserSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
@@ -100,4 +101,6 @@ def updateUserProfile(request):
         update_flag=True
     if update_flag:
         user.save()
-    return Response(status=status.HTTP_200_OK)
+    access_token = RefreshToken.for_user(user)
+    access_token['name'] = user.name
+    return Response({'access': str(access_token.access_token), 'refresh': str(access_token)},status=status.HTTP_200_OK)
