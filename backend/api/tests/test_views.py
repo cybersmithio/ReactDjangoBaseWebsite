@@ -201,3 +201,40 @@ class UserProfileTests(UserTestCase):
         access_token=self.helper_get_access_token_for_other_user()
         response = self.client.get('/api/users/profile/', HTTP_AUTHORIZATION=f"Bearer {access_token}")
         self.assertEqual(response.data['name'], "Jim Smyth")
+
+class UpdateUserProfileTests(UserTestCase):
+    def test_unauthenticated_user_cannot_change_name(self):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        access_token=self.helper_get_access_token_for_other_user()
+        response = self.client.put('/api/users/profile/update/',{'name': 'Jimmy Smyth', 'email': 'jim@example.com'}, content_type="application/json")
+        self.assertEqual(response.status_code, 401)
+ 
+    def test_user_can_change_name(self):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        access_token=self.helper_get_access_token_for_other_user()
+        response = self.client.put('/api/users/profile/update/',{'name': 'Jimmy Smyth'}, content_type="application/json", HTTP_AUTHORIZATION=f"Bearer {access_token}")
+        self.assertEqual(response.status_code, 200)
+        user=User.objects.get(email='jim@example.com')
+        self.assertEqual(user.name,"Jimmy Smyth")
+ 
+    def test_blank_update_does_not_change_anything(self):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        access_token=self.helper_get_access_token_for_other_user()
+        response = self.client.put('/api/users/profile/update/', content_type="application/json", HTTP_AUTHORIZATION=f"Bearer {access_token}")
+        self.assertEqual(response.status_code, 200)
+        user=User.objects.get(email='jim@example.com')
+        self.assertEqual(user.name,"Jim Smyth")
+ 
+    def test_user_can_change_password(self):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        access_token=self.helper_get_access_token_for_other_user()
+        response = self.client.put('/api/users/profile/update/',{'password': 'IWantInNow123!'}, content_type="application/json", HTTP_AUTHORIZATION=f"Bearer {access_token}")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post('/api/users/token/', data={'email': 'jim@example.com', 'password': 'IWantIn123!'})
+        self.assertEqual(response.status_code, 401)
+        response = self.client.post('/api/users/token/', data={'email': 'jim@example.com', 'password': 'IWantInNow123!'})
+        self.assertEqual(response.status_code, 200)

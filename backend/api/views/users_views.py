@@ -86,3 +86,18 @@ def userProfile(request):
     user = request.user
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateUserProfile(request):
+    update_flag=False
+    user = User.objects.get(email=request.user)
+    if "name" in request.data:
+        user.name=request.data['name']
+        update_flag=True
+    if "password" in request.data:
+        user.password=make_password(request.data['password'])
+        update_flag=True
+    if update_flag:
+        user.save()
+    return Response(status=status.HTTP_200_OK)
