@@ -267,3 +267,12 @@ class UpdateUserProfileTests(UserTestCase):
         decoded = jwt.decode(response.data['access'], settings.SECRET_KEY, algorithms=["HS256"])
         self.assertIn("name", decoded)
         self.assertEqual(decoded['name'],"Jimmy Smyth")
+
+    def test_anything_but_put_request_returns_error(self):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        access_token=self.helper_get_access_token_for_other_user()
+        response = self.client.get('/api/users/profile/update/',{'name': 'Jimmy Smyth', 'password': 'IWantInNow123!'}, content_type="application/json", HTTP_AUTHORIZATION=f"Bearer {access_token}")
+        self.assertEqual(response.status_code, 405)
+        response = self.client.post('/api/users/profile/update/',{'name': 'Jimmy Smyth', 'password': 'IWantInNow123!'}, content_type="application/json", HTTP_AUTHORIZATION=f"Bearer {access_token}")
+        self.assertEqual(response.status_code, 405)
