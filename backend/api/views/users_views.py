@@ -132,4 +132,9 @@ def forgotPassword(request):
 
 @api_view(['POST'])
 def resetPassword(request):
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    try:
+        user = User.objects.get(reset_password_secret=request.data['reset_secret'])
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(status=status.HTTP_200_OK)
