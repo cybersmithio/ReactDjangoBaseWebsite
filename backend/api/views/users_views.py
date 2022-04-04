@@ -39,7 +39,7 @@ def registerUser(request):
             user = User.objects.create_user(
                 email=request.data['email'],
                 name=request.data['name'],
-                password=make_password(request.data['password']),
+                password=request.data['password'],
                 is_active=False,
                 is_staff=False,
                 is_superuser=False,

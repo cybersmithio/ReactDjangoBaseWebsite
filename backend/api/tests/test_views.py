@@ -125,6 +125,14 @@ class VerifyUserEmailAPITests(UserTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message'], "unable to verify user")
 
+    def test_a_verified_user_can_login(self, mock_send_mail):
+        self.client.post('/api/users/register/', data={'name': 'James Smith', 'email': 'james@example.com', 'password': 'LetMeIn123!'})
+        user = User.objects.get(email='james@example.com')
+        response = self.client.get(f'/api/users/verify/{user.verification_email_secret}')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post('/api/users/token/', data={'email': 'james@example.com', 'password': 'LetMeIn123!'})
+        self.assertEqual(response.status_code, 200)
+
 class UserAuthenticationTests(UserTestCase):
     def test_user_can_login(self):
         self.helper_create_user()
