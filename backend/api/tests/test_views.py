@@ -346,3 +346,16 @@ class PasswordResetTests(UserTestCase):
         user = User.objects.get(email='james@example.com')
         response = self.client.post(f'/api/users/password/reset/', data={"reset_secret": user.reset_password_secret})
         self.assertEqual(response.status_code, 400)
+
+    def test_password_reset_changes_password(self, mock_send_mail):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        response = self.client.post('/api/users/token/', data={'email': 'james@example.com', 'password': 'LetMeIn123!'})
+        self.assertEqual(response.status_code, 200)
+        self.client.post('/api/users/password/forgot/', data={'email': 'james@example.com'})
+        user = User.objects.get(email='james@example.com')
+        self.client.post(f'/api/users/password/reset/', data={'password': 'MyNewPasswordIWillNotForget123!', "reset_secret": user.reset_password_secret})
+        response = self.client.post('/api/users/token/', data={'email': 'james@example.com', 'password': 'LetMeIn123!'})
+        self.assertEqual(response.status_code, 401)
+        response = self.client.post('/api/users/token/', data={'email': 'james@example.com', 'password': 'MyNewPasswordIWillNotForget123!'})
+        self.assertEqual(response.status_code, 200)
