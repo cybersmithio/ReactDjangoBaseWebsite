@@ -137,6 +137,7 @@ def resetPassword(request):
     try:
         user = User.objects.get(reset_password_secret=request.data['reset_secret'])
         user.password=make_password(request.data['password'])
+        user.reset_password_secret=None
         user.save()        
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST)
