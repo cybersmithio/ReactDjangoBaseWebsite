@@ -323,3 +323,10 @@ class PasswordResetTests(UserTestCase):
             if key == "html_message":
                 self.assertEqual(value, f'Please <a href="{settings.RESET_PASSWORD_URL}{user.reset_password_secret}">click this link</a> to reset your password for {settings.WEB_SITE_NAME}.')
                 self.assertRegex(value, f'Please <a href="{settings.RESET_PASSWORD_URL}[0-9A-Za-z]{{32}}">click this link</a> to reset your password for {settings.WEB_SITE_NAME}\.$')
+
+    def test_password_reset_shows_vague_error_on_failure(self, mock_send_mail):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        self.client.post('/api/users/password/forgot/', data={'email': 'james@example.com'})
+        response = self.client.post('/api/users/password/reset/', data={'password': 'MyNewPasswordIWillNotForget123!', "reset_secret": "1234567890123fdaacdsad"})
+        self.assertEqual(response.status_code, 400)

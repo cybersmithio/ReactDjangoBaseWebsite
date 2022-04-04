@@ -129,3 +129,7 @@ def forgotPassword(request):
             pass        
         return Response(status=status.HTTP_200_OK)     
     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def resetPassword(request):
+    return Response(status=status.HTTP_400_BAD_REQUEST)
