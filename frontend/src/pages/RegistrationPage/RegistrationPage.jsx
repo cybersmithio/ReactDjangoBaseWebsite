@@ -39,8 +39,11 @@ function RegistrationPage() {
     } else {
       setSubmitButtonEnabled(false);
     }
+  }, [name, email, password, confirmPassword, passwordGood]);
 
+  useEffect(() => {
     if (loading) {
+      console.log("Calling axios.");
       const req_config = {
         headers: {
           "Content-type": "application/json",
@@ -57,26 +60,19 @@ function RegistrationPage() {
           req_config
         )
         .then((response) => {
+          console.log("Axios successful.");
           setResults(true);
           setLoading(false);
           setSuccess(true);
         })
         .catch((error) => {
+          console.log("Axios failed.");
           setResults(true);
           setLoading(false);
           setSuccess(false);
         });
     }
-  }, [
-    loading,
-    results,
-    success,
-    name,
-    email,
-    password,
-    confirmPassword,
-    passwordGood,
-  ]);
+  }, [loading]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -86,10 +82,15 @@ function RegistrationPage() {
   };
 
   if (loading) {
+    console.log("loading=true");
     return <div>Loading</div>;
   } else {
+    console.log("loading=false");
     if (results) {
+      console.log("results=true");
       if (success) {
+        console.log("success=true");
+
         return (
           <div>
             <h1>Verify Email</h1>
@@ -98,9 +99,12 @@ function RegistrationPage() {
           </div>
         );
       } else {
+        console.log("success=false");
         return <div>Unable to complete registration</div>;
       }
     } else {
+      console.log("results=false");
+
       return (
         <Container>
           <Row>
