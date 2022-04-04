@@ -338,3 +338,11 @@ class PasswordResetTests(UserTestCase):
         user = User.objects.get(email='james@example.com')
         response = self.client.post(f'/api/users/password/reset/', data={'password': 'MyNewPasswordIWillNotForget123!', "reset_secret": user.reset_password_secret})
         self.assertEqual(response.status_code, 200)
+
+    def test_password_reset_fails_with_good_secret_but_no_password(self, mock_send_mail):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        self.client.post('/api/users/password/forgot/', data={'email': 'james@example.com'})
+        user = User.objects.get(email='james@example.com')
+        response = self.client.post(f'/api/users/password/reset/', data={"reset_secret": user.reset_password_secret})
+        self.assertEqual(response.status_code, 400)
