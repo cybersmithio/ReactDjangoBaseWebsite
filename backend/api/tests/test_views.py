@@ -304,3 +304,22 @@ class PasswordResetTests(UserTestCase):
         self.helper_create_another_user()
         response = self.client.post('/api/users/password/reset/', data={'email': 'james@example.com'})
         self.assertEqual(response.status_code, 200)
+
+    def test_valid_email_sends_a_password_reset_email(self, mock_send_mail):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        self.client.post('/api/users/password/reset/', data={'email': 'james@example.com'})
+        user = User.objects.get(email='james@example.com')
+ 
+        self.assertEqual(mock_send_mail.called, True)
+        (subject, body, from_email, to_list), kwargs = mock_send_mail.call_args
+        self.assertEqual(subject, f"Password reset for your account on {settings.WEB_SITE_NAME}")
+        self.assertEqual(body, f'To reset your password for {settings.WEB_SITE_NAME}, please go to {settings.RESET_PASSWORD_URL}{user.reset_password_secret}')
+        self.assertRegex(body, f'To reset your password for {settings.WEB_SITE_NAME}, please go to {settings.RESET_PASSWORD_URL}[0-9A-Za-z]{{32}}$')  
+        self.assertEqual(from_email, settings.SENDER_EMAIL)
+        self.assertEqual(to_list,['james@example.com'])
+        self.assertIn("html_message", kwargs)
+        for key, value in kwargs.items():
+            if key == "html_message":
+                self.assertEqual(value, f'Please <a href="{settings.RESET_PASSWORD_URL}{user.reset_password_secret}">click this link</a> to reset your password for {settings.WEB_SITE_NAME}.')
+                self.assertRegex(value, f'Please <a href="{settings.RESET_PASSWORD_URL}[0-9A-Za-z]{{32}}">click this link</a> to reset your password for {settings.WEB_SITE_NAME}\.$')
