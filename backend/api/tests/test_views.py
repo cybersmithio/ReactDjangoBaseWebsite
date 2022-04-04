@@ -276,3 +276,31 @@ class UpdateUserProfileTests(UserTestCase):
         self.assertEqual(response.status_code, 405)
         response = self.client.post('/api/users/profile/update/',{'name': 'Jimmy Smyth', 'password': 'IWantInNow123!'}, content_type="application/json", HTTP_AUTHORIZATION=f"Bearer {access_token}")
         self.assertEqual(response.status_code, 405)
+
+@patch('api.views.users_views.send_mail')
+class PasswordResetTests(UserTestCase):
+    def test_anything_but_post_request_returns_405_error(self, mock_send_mail):
+        response = self.client.get('/api/users/password/reset/')
+        self.assertEqual(response.status_code, 405)
+        response = self.client.put('/api/users/password/reset/')
+        self.assertEqual(response.status_code, 405)
+        response = self.client.patch('/api/users/password/reset/')
+        self.assertEqual(response.status_code, 405)
+    
+    def test_no_email_returns_400(self, mock_send_mail):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        response = self.client.post('/api/users/password/reset/')
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_email_returns_200(self, mock_send_mail):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        response = self.client.post('/api/users/password/reset/', data={'email': 'nobody@example.com'})
+        self.assertEqual(response.status_code, 200)
+
+    def test_valid_email_returns_200(self, mock_send_mail):
+        self.helper_create_user()
+        self.helper_create_another_user()
+        response = self.client.post('/api/users/password/reset/', data={'email': 'james@example.com'})
+        self.assertEqual(response.status_code, 200)
