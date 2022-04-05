@@ -97,7 +97,7 @@ class VerifyUserEmailAPITests(UserTestCase):
     def test_verification_email_link(self, mock_send_mail):
         self.client.post('/api/users/register/', data={'name': 'James Smith', 'email': 'james@example.com', 'password': 'LetMeIn123!'})
         user = User.objects.get(email='james@example.com')
-        response = self.client.get(f'/api/users/verify/{user.verification_email_secret}')
+        response = self.client.post(f'/api/users/email/verify/',data={'verification_secret': user.verification_email_secret})
         user = User.objects.get(email='james@example.com')
         self.assertTrue(user.verified_email)
         self.assertTrue(user.is_active)
@@ -105,14 +105,14 @@ class VerifyUserEmailAPITests(UserTestCase):
     def test_verification_email_link_returns_200(self, mock_send_mail):
         self.client.post('/api/users/register/', data={'name': 'James Smith', 'email': 'james@example.com', 'password': 'LetMeIn123!'})
         user = User.objects.get(email='james@example.com')
-        response = self.client.get(f'/api/users/verify/{user.verification_email_secret}')
+        response = self.client.post(f'/api/users/email/verify/',data={'verification_secret': user.verification_email_secret})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['message'], "user verified")
  
     def test_bogus_verification_does_not_work(self, mock_send_mail):
         self.client.post('/api/users/register/', data={'name': 'James Smith', 'email': 'james@example.com', 'password': 'LetMeIn123!'})
         user = User.objects.get(email='james@example.com')
-        response = self.client.get(f'/api/users/verify/4BCDEFGH1JKLmNOpqrSTUVWXYZ')
+        response = self.client.post(f'/api/users/email/verify/',data={'verification_secret': '4BCDEFGH1JKLmNOpqrSTUVWXYZ'})
         user = User.objects.get(email='james@example.com')
         self.assertFalse(user.verified_email)
         self.assertFalse(user.is_active)
@@ -120,15 +120,23 @@ class VerifyUserEmailAPITests(UserTestCase):
     def test_bogus_verification_returns_400(self, mock_send_mail):
         self.client.post('/api/users/register/', data={'name': 'James Smith', 'email': 'james@example.com', 'password': 'LetMeIn123!'})
         user = User.objects.get(email='james@example.com')
-        response = self.client.get(f'/api/users/verify/4BCDEFGH1JKLmNOpqrSTUVWXYZ')
+        response = self.client.post(f'/api/users/email/verify/',data={'verification_secret': '4BCDEFGH1JKLmNOpqrSTUVWXYZ'})
         user = User.objects.get(email='james@example.com')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message'], "unable to verify user")
 
+    def test_anything_but_post_request_returns_405_error(self, mock_send_mail):
+        response = self.client.get('/api/users/email/verify/')
+        self.assertEqual(response.status_code, 405)
+        response = self.client.put('/api/users/email/verify/')
+        self.assertEqual(response.status_code, 405)
+        response = self.client.patch('/api/users/email/verify/')
+        self.assertEqual(response.status_code, 405)
+
     def test_a_verified_user_can_login(self, mock_send_mail):
         self.client.post('/api/users/register/', data={'name': 'James Smith', 'email': 'james@example.com', 'password': 'LetMeIn123!'})
         user = User.objects.get(email='james@example.com')
-        response = self.client.get(f'/api/users/verify/{user.verification_email_secret}')
+        response = self.client.post(f'/api/users/email/verify/',data={'verification_secret': user.verification_email_secret})
         self.assertEqual(response.status_code, 200)
         response = self.client.post('/api/users/token/', data={'email': 'james@example.com', 'password': 'LetMeIn123!'})
         self.assertEqual(response.status_code, 200)
