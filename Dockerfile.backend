@@ -1,0 +1,10 @@
+FROM python:3.10
+ 
+WORKDIR /usr/src/app
+ 
+COPY backend ./
+RUN pip install --no-cache-dir -r requirements.txt && \
+    rm -rf /usr/src/app/db.sqlite3 && \
+    python manage.py migrate
+    
+CMD [ "gunicorn", "backend.wsgi:application", "-b","0.0.0.0:8000","--access-logfile","-"]
