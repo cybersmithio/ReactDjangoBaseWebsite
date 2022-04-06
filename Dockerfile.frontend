@@ -17,3 +17,5 @@ RUN rm -rf build node_modules .env* *.log && \
 RUN apt remove -y nodejs && apt-get clean
  
 WORKDIR /usr/share/nginx/html/
+
+COPY nginx.frontend.conf /etc/nginx/nginx.conf
