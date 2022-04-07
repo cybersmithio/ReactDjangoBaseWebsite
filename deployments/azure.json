@@ -1,0 +1,63 @@
+{
+  "azure": {
+    "subscription": "Cybersmith Pay-As-You-Go",
+    "resourceGroups": [
+      {
+        "name": "rdbwNonProd",
+        "location": "canadacentral",
+        "objects": [
+          {
+            "objectType": "acr",
+            "name": "gvrtey54b5u7ybet",
+            "sku": "Basic",
+            "id": ""
+          },
+          {
+            "objectType": "keyvault",
+            "name": "hsdui5fui54t87b3c7634",
+            "id": ""
+          },
+          {
+            "objectType": "vnet",
+            "name": "aksVnet",
+            "id": "",
+            "addressPrefix": "172.16.0.0/14"
+          },
+          {
+            "objectType": "subnet",
+            "name": "aksNonProdSubnet",
+            "id": "",
+            "vnetName": "aksVnet",
+            "addressPrefix": "172.16.0.0/16"
+          },
+          {
+            "objectType": "aks",
+            "name": "aksNonProd01",
+            "id": "",
+            "nodeCount": 1,
+            "maxCount": 1,
+            "minCount": 1,
+            "nodeSize": "Standard_B4ms",
+            "nodePoolName": "aksnp01pool",
+            "networkPlugin": "azure",
+            "vnetName": "aksVnet",
+            "vnetResourceGroup": "rdbwNonProd",
+            "vnetSubnetName": "aksNonProdSubnet",
+            "dnsNamePrefix": "aksnp01"
+          },
+          {
+            "objectType": "role",
+            "name": "role",
+            "role": "AcrPull",
+            "assigneeType": "aksPool",
+            "assigneeName": "aksNonProd01",
+            "assigneeResourceGroup": "rdbwNonProd",
+            "scopeType": "acr",
+            "scopeName": "gvrtey54b5u7ybet",
+            "scopeResourceGroup": "rdbwNonProd"
+          }
+        ]
+      }
+    ]
+  }
+}
