@@ -16,6 +16,19 @@
             "objectType": "keyvault",
             "name": "mncfuivguic87cf7yu53cf8",
             "id": ""
+          },
+          {
+            "objectType": "vnet",
+            "name": "aksVnet",
+            "id": "",
+            "addressPrefix": "172.16.0.0/14"
+          },
+          {
+            "objectType": "subnet",
+            "name": "aksNonProdSubnet",
+            "id": "",
+            "vnetName": "aksVnet",
+            "addressPrefix": "172.16.0.0/16"
           }
         ]
       }
