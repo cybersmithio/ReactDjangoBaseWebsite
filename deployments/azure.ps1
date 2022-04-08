@@ -57,7 +57,49 @@ function DeployAzureObject() {
                 "Could not find Azure Keyvault"
                 exit 
             }
-        }   
+        }
+        vnet {
+            $retval=az network vnet show -g $rg --name $name 2> $null
+            if ( -not $retval ) {
+                "Create virtual network '$name'"
+                az network vnet create -g $rg --name $name --location $location --address-prefixes $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].addressPrefix
+                if( -not $? ) { 
+                    "Could not create vnet"
+                    exit 
+                }
+            } else {
+                "Virtual network already created"
+            }      
+            $id=az network vnet show -g $rg --name $name --output json --query id |ConvertFrom-Json
+            if( -not $? ) { 
+                "Could not find vnet"
+                exit 
+            }
+        }
+        subnet {
+            $retval=az network vnet subnet show -g $rg --name $name --vnet-name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetName 2> $null
+            if (-not $retval) {
+                az network vnet subnet create -g $rg `
+                    --name $name `
+                    --address-prefix $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].addressPrefix `
+                    --vnet-name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetName
+                if( -not $? ) { 
+                    "Could not create subnet"
+                    exit 
+                }
+            } else {
+                "Subnet already created"
+            }
+            $id=az network vnet subnet show -g $rg `
+                --name $name `
+                --vnet-name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetName `
+                --output json --query id |ConvertFrom-Json
+            if( -not $? ) { 
+                "Could not find subnet"
+                exit 
+            }
+        }
+
         default {
             "Unknown object type: '$objectType'"
             exit
