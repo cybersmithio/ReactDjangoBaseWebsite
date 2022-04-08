@@ -1,0 +1,19 @@
+{
+  "azure": {
+    "subscription": "Cybersmith Pay-As-You-Go",
+    "resourceGroups": [
+      {
+        "name": "rdbwNonProd",
+        "location": "canadacentral",
+        "objects": [
+          {
+            "objectType": "acr",
+            "name": "cud64hfcidjdbvi9gjh4d",
+            "sku": "Basic",
+            "id": ""
+          }
+        ]
+      }
+    ]
+  }
+}
