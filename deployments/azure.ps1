@@ -40,17 +40,44 @@ function DeployAzureObject() {
                 exit 
             }
         }
+        keyvault {
+            $retval=az keyvault show -g $rg -n $name 2> $null
+            if ( -not $retval ) {
+                "Creating the Azure Key Vault '$name'"
+                az keyvault create -n $name -g $rg -l $location
+                if( -not $? ) { 
+                    "Could not create Azure Keyvault"
+                    exit 
+                }
+            } else {
+                "Azure Key Vault already created"
+            }
+            $id=az keyvault show -n $name -g $rg --output json --query id |ConvertFrom-Json
+            if( -not $? ) { 
+                "Could not find Azure Keyvault"
+                exit 
+            }
+        }   
+        default {
+            "Unknown object type: '$objectType'"
+            exit
+        }
+
     }
     $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].id=$id
     "Object has ID '$($config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].id)'"    
 }
 
 
-az login
+az login > $null
 if( -not $? ) {
     "Error logging in"
     exit
 }
+
+"------------------------------------------------------------------"
+"Successfully logged in"
+
 
 az account set --subscription $config.azure.subscription
 if( -not $? ) {
@@ -58,6 +85,7 @@ if( -not $? ) {
     exit
 }
 
+"------------------------------------------------------------------"
 "Subscription set to $($config.azure.subscription)"
 
 for($rgIndex=0; $rgIndex -lt ($config.azure.resourceGroups.Length); ++$rgIndex ) {

@@ -11,6 +11,11 @@
             "name": "cud64hfcidjdbvi9gjh4d",
             "sku": "Basic",
             "id": ""
+          },
+          {
+            "objectType": "keyvault",
+            "name": "mncfuivguic87cf7yu53cf8",
+            "id": ""
           }
         ]
       }
