@@ -29,6 +29,32 @@
             "id": "",
             "vnetName": "aksVnet",
             "addressPrefix": "172.16.0.0/16"
+          },
+          {
+            "objectType": "aks",
+            "name": "aksNonProd01",
+            "id": "",
+            "nodeCount": 1,
+            "maxCount": 1,
+            "minCount": 1,
+            "nodeSize": "Standard_B4ms",
+            "nodePoolName": "aksnp01pool",
+            "networkPlugin": "azure",
+            "vnetName": "aksVnet",
+            "vnetResourceGroup": "rdbwNonProd",
+            "vnetSubnetName": "aksNonProdSubnet",
+            "dnsNamePrefix": "aksnp01"
+          },
+          {
+            "objectType": "role",
+            "name": "",
+            "role": "AcrPull",
+            "assigneeType": "aksPool",
+            "assigneeName": "aksNonProd01",
+            "assigneeResourceGroup": "rdbwNonProd",
+            "scopeType": "acr",
+            "scopeName": "cud64hfcidjdbvi9gjh4d",
+            "scopeResourceGroup": "rdbwNonProd"
           }
         ]
       }
