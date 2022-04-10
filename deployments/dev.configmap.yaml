@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rdbw-frontend-config
+  namespace: rdbw-dev
+data:
+  config.js: |
+    window._env_ = {
+      BACKEND_URL: "http://localhost:6000/",
+    };
