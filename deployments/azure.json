@@ -55,6 +55,29 @@
             "scopeType": "acr",
             "scopeName": "cud64hfcidjdbvi9gjh4d",
             "scopeResourceGroup": "rdbwNonProd"
+          },
+          {
+            "objectType": "subnet",
+            "name": "GatewaySubnet",
+            "id": "",
+            "vnetName": "aksVnet",
+            "addressPrefix": "172.17.0.0/24"
+          },
+          {
+            "objectType": "pubip",
+            "name": "aksNonProdVpnPubIp",
+            "id": ""
+          },
+          {
+            "objectType": "vpngw",
+            "name": "aksNonProdVpn",
+            "id": "",
+            "publicIpAddress": "aksNonProdVpnPubIp",
+            "addressPrefix": "192.168.123.0/24",
+            "sku": "VpnGw1",
+            "vpnType": "RouteBased",
+            "clientProtocol": "OpenVPN",
+            "aadAudience": "41b23e61-6c1e-4545-b367-cd054e0ed4b4"
           }
         ]
       }
