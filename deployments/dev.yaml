@@ -25,8 +25,16 @@ spec:
             requests:
               cpu: 100m
               memory: 100Mi
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/nginx/html/config/config.js
+              subPath: config.js
           ports:
             - containerPort: 80
+      volumes:
+        - name: config-volume
+          configMap:
+            name: rdbw-frontend-config
 ---
 apiVersion: v1
 kind: Service
