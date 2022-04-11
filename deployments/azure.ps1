@@ -233,6 +233,45 @@ function DeployAzureObject() {
             }
             $id=az vm show -g $rg --name $name --query id |ConvertFrom-Json
         }
+        privateDnsZone {
+            $retval=az network private-dns zone show -g $rg --name $name 2> $null
+            if ( -not $retval ) {
+                "Creating the private DNS zone '$name'"
+                $retval=az network private-dns zone create -g $rg -n $name
+                if( -not $? ) {
+                    "Could not create the private DNS zone"
+                    exit
+                }            
+            } else {
+                "The private DNS zone is already created"
+            }
+            $id=az network private-dns zone show -g $rg --name $name --query id |ConvertFrom-Json            
+            if( -not $? ) {
+                "Could not find the private DNS zone"
+                exit
+            }      
+ 
+            "Linking private DNS zone to virtual network"        
+            $retval=az network private-dns link vnet show -g $rg --name "$($config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetName)-$name" -z $name 2> $null
+            if ( -not $retval ) {
+                $vnetId=az network vnet show `
+                    -g $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetResourceGroup `
+                    --name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetName --output json --query id |ConvertFrom-Json
+                if( -not $? ) {
+                    "Unable to identity virtual network ID"
+                    exit
+                }            
+    
+                az network private-dns link vnet create -g $rg --name "$($config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetName)-$name" -z $name -v $vnetId -e False
+                if( -not $? ) {
+                    "Unable to create link between private DNS and vnet"
+                    exit
+                }            
+            } else {
+                "The private DNS zone link to the virtual network already exists"
+            }
+        }
+
         default {
             "Unknown object type: '$objectType'"
             exit
