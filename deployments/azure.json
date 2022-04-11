@@ -79,6 +79,20 @@
             "vpnType": "RouteBased",
             "clientProtocol": "OpenVPN",
             "aadAudience": "41b23e61-6c1e-4545-b367-cd054e0ed4b4"
+          },
+          {
+            "objectType": "subnet",
+            "name": "dnsForwarder",
+            "id": "",
+            "vnetName": "aksVnet",
+            "addressPrefix": "172.17.1.0/29"
+          },
+          {
+            "objectType": "vm",
+            "name": "dnsforwarder1",
+            "id": "",
+            "templateFile": "dnsForwarder.json",
+            "parametersFile": "dnsForwarder.parameters.json"
           }
         ]
       }
