@@ -169,7 +169,54 @@ function DeployAzureObject() {
             "Role has been assigned"
             return
         }
-
+        pubip {
+            $retval=az network public-ip show -g $rg --name $name  2> $null
+            if ( -not $retval ) {
+                "Creating the public IP '$name'"
+                az network public-ip create --name $name -g $rg
+                if( -not $? ) {
+                    "Could not create public IP "
+                    exit
+                }
+            } else {
+                "Public IP already created"
+            }
+            $id=az network public-ip show --name $name -g $rg --query id |ConvertFrom-Json
+            if( -not $? ) {
+                "Could not find public IP"
+                exit
+            }
+        }
+        vpngw {
+            $retval=az network vnet-gateway show -g $rg --name $name  2> $null
+            if ( -not $retval ) {
+                "Creating the VPN Gateway '$name'"
+                $aadTenantId = az account show --query tenantId |ConvertFrom-Json
+                az network vnet-gateway create --name $name -g $rg `
+                --vnet $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetName `
+                --public-ip-address $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].publicIpAddress `
+                --address-prefixes $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].addressPrefix `
+                --gateway-type Vpn `
+                --sku $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].sku `
+                --vpn-type $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vpnType `
+                --client-protocol $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].clientProtocol `
+                --aad-audience $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].aadAudience `
+                --aad-issuer https://sts.windows.net/$aadTenantId/ `
+                --aad-tenant https://login.microsoftonline.com/$aadTenantId/
+                               
+                if( -not $? ) {
+                    "Could not create VPN gateway"
+                    exit
+                }
+            } else {
+                "VPN gateway already created"
+            }
+            $id=az network vnet-gateway show --name $name -g $rg --query id |ConvertFrom-Json
+            if( -not $? ) {
+                "Could not find VPN gateway"
+                exit
+            }
+        }        
         default {
             "Unknown object type: '$objectType'"
             exit
