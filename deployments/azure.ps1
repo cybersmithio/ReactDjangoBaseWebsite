@@ -218,7 +218,7 @@ function DeployAzureObject() {
             }
         }
         vm {
-            $retval=az vm show -g $rg --name $name
+            $retval=az vm show -g $rg --name $name 2> $null
             if ( -not $retval ) {
                 "Creating the virtual machine '$name'"
                 $retval=az deployment group create -g $rg `
