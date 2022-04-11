@@ -73,6 +73,7 @@
             "name": "aksNonProdVpn",
             "id": "",
             "publicIpAddress": "aksNonProdVpnPubIp",
+            "vnetName": "aksVnet",
             "addressPrefix": "192.168.123.0/24",
             "sku": "VpnGw1",
             "vpnType": "RouteBased",
