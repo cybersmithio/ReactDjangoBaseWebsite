@@ -144,6 +144,10 @@ function DeployAzureObject() {
                     $assigneeId=az aks show -g $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].assigneeResourceGroup `
                         --name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].assigneeName --query "identityProfile.kubeletidentity.objectId"
                 }
+                aksPrincipal {
+                    $assigneeId=az aks show -g $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].assigneeResourceGroup `
+                        --name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].assigneeName --query "identity.principalId"
+                } 
                 default {
                     "Unknown assignee type: $($config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].assigneeType)"
                     exit
@@ -154,6 +158,12 @@ function DeployAzureObject() {
                 acr {
                     $scopeId=az acr show -g $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].scopeResourceGroup `
                         --name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].scopeName --query id
+                }
+                subnet {
+                    $scopeId=az network vnet subnet show -g $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].scopeResourceGroup `
+                        --name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].scopeName `
+                        --vnet-name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].scopeVnetName `
+                        --query id
                 }
                 default {
                     "Unknown scope type: $($config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].scopeType)"
