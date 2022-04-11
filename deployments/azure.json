@@ -93,6 +93,13 @@
             "id": "",
             "templateFile": "dnsForwarder.json",
             "parametersFile": "dnsForwarder.parameters.json"
+          },
+          {
+            "objectType": "privateDnsZone",
+            "name": "dev.example.local",
+            "id": "",
+            "vnetName": "aksVnet",
+            "vnetResourceGroup": "rdbwNonProd"
           }
         ]
       }
