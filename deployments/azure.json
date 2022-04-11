@@ -100,6 +100,18 @@
             "id": "",
             "vnetName": "aksVnet",
             "vnetResourceGroup": "rdbwNonProd"
+          },
+          {
+            "objectType": "role",
+            "name": "",
+            "role": "Network Contributor",
+            "assigneeType": "aksPrincipal",
+            "assigneeName": "aksNonProd01",
+            "assigneeResourceGroup": "rdbwNonProd",
+            "scopeType": "subnet",
+            "scopeName": "aksNonProdSubnet",
+            "scopeVnetName": "aksVnet",
+            "scopeResourceGroup": "rdbwNonProd"
           }
         ]
       }
