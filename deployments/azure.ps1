@@ -216,7 +216,23 @@ function DeployAzureObject() {
                 "Could not find VPN gateway"
                 exit
             }
-        }        
+        }
+        vm {
+            $retval=az vm show -g $rg --name $name
+            if ( -not $retval ) {
+                "Creating the virtual machine '$name'"
+                $retval=az deployment group create -g $rg `
+                    --template-file $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].templateFile `
+                    --parameters $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].parametersFile
+                if( -not $? ) {
+                    "Could not complete the deployment group"
+                    exit
+                }            
+            } else {
+                "The virtual machine is already created"
+            }
+            $id=az vm show -g $rg --name $name --query id |ConvertFrom-Json
+        }
         default {
             "Unknown object type: '$objectType'"
             exit

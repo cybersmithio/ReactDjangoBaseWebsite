@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "value": "dnsforwarder1"
+    },
+    "adminUsername": {
+      "value": "jsmith"
+    },
+    "vmSize": {
+      "value": "Standard_B2ms"
+    },
+    "authenticationType": {
+      "value": "password"
+    },
+    "vnetAddressPrefix": {
+      "value": "172.16.0.0/14"
+    },
+    "setupUri": {
+      "value": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/demos/dns-forwarder/forwarderSetup.sh"
+    },
+    "vnetName": {
+      "value": "aksVnet"
+    },
+    "subnet1Name": {
+      "value": "dnsForwarder"
+    }
+  }
+}
