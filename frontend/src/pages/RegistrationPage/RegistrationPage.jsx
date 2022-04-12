@@ -110,7 +110,7 @@ function RegistrationPage() {
           <Row>
             <Col>
               <h1>Register</h1>
-              <Form onSubmit={submitHandler}>
+              <Form onSubmit={submitHandler} autoComplete="off">
                 <Form.Group controlId="name">
                   <Form.Label>Full Name</Form.Label>
                   <Form.Control
