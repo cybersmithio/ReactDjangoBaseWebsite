@@ -28,6 +28,9 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
+    - script: |
+        cd frontend; npm install; CI=true npm run test
+      displayName: "Frontend tests"
     - task: Docker@2
       displayName: Build frontend image
       inputs:
@@ -57,6 +60,10 @@ stages:
         tags: |
           $(Build.BuildId)
           latest
+    - script: |
+        docker images
+        docker run --rm --name test1 cud64hfcidjdbvi9gjh4d/rdbw-backend bash -c "python manage.py test"
+      displayName: "Backend tests"
     - task: Docker@2
       displayName: Push backend image to ACR
       inputs:
