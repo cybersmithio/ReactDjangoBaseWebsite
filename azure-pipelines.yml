@@ -29,8 +29,8 @@ stages:
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
-      displayName: Build frontend image
       inputs:
+        containerRegistry: 'cud64hfcidjdbvi9gjh4d'
         repository: 'rdbw-frontend'
         command: 'build'
         Dockerfile: '**/Dockerfile.frontend'
@@ -38,7 +38,6 @@ stages:
           $(Build.BuildId)
           latest
     - task: Docker@2
-      displayName: Push frontend image to ACR
       inputs:
         containerRegistry: 'cud64hfcidjdbvi9gjh4d'
         repository: 'rdbw-frontend'
