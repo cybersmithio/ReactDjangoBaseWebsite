@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rdbw-backend
+  namespace: rdbw-dev
+  labels:
+    app: rdbw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rdbw-backend
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: rdbw-backend
+        tier: backend
+    spec:
+      containers:
+        - name: rdbw-backend
+          image: cud64hfcidjdbvi9gjh4d.azurecr.io/rdbw-backend:latest
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DJANGO_WEB_SITE_NAME
+              value: React Django Template Web Site
+            - name: DJANGO_VERIFICATION_URL
+              value: http://www.dev.example.local/verifyEmail/
+            - name: DJANGO_CORS_ALLOW_ALL_ORIGINS
+              value: "True"
+            - name: DJANGO_RESET_PASSWORD_URL
+              value: http://www.dev.example.local/resetPassword/
+            - name: DJANGO_EMAIL_HOST
+              value: smtp.office365.com
+            - name: DJANGO_EMAIL_PORT
+              value: "587"
+            - name: DJANGO_ADMIN
+              value: "True"
+            - name: DJANGO_SENDER_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: email
+                  key: sender
+            - name: DJANGO_EMAIL_HOST_USER
+              valueFrom:
+                secretKeyRef:
+                  name: email
+                  key: user
+            - name: DJANGO_EMAIL_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: email
+                  key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rdbw-backend-cluster-service
+  namespace: rdbw-dev
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8000
+  selector:
+    app: rdbw-backend
+    tier: backend
