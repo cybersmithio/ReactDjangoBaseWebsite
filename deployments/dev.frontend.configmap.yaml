@@ -6,5 +6,5 @@ metadata:
 data:
   config.js: |
     window._env_ = {
-      BACKEND_URL: "http://localhost:6000/",
+      BACKEND_URL: "http://api.dev.example.local/",
     };
