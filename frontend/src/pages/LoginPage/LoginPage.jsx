@@ -72,7 +72,7 @@ function LoginPage({ history }) {
             ) : (
               <div />
             )}
-            <Form onSubmit={submitHandler}>
+            <Form onSubmit={submitHandler} autoComplete="off">
               <Form.Group controlId="email">
                 <Form.Label>Email Address</Form.Label>
                 <Form.Control
