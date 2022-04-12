@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-8702=*jixhy*mop*-#ka2dx@nhwj8%8x0_sr=ii2ga9wvzcssl
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+if os.getenv('DJANGO_ALLOWED_HOSTS') is not None and os.getenv('DJANGO_ALLOWED_HOSTS') != "":
+    ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split(',')
 
 
 # Application definition
@@ -193,3 +195,7 @@ print(f"STATIC_URL: {STATIC_URL}")
 print(f"RESET_PASSWORD_URL: {RESET_PASSWORD_URL}")
 print(f"EMAIL_HOST: {EMAIL_HOST}")
 print(f"EMAIL_PORT: {EMAIL_PORT}")
+print(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")
+if os.getenv('DJANGO_CORS_ALLOWED_ORIGINS') is not None and os.getenv('DJANGO_CORS_ALLOWED_ORIGINS') != "":
+    CORS_ALLOWED_ORIGINS = os.getenv('DJANGO_CORS_ALLOWED_ORIGINS').split(',')
+    print(f"CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS}")
