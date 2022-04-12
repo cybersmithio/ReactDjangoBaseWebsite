@@ -29,6 +29,7 @@ stages:
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
+      displayName: Build frontend image
       inputs:
         containerRegistry: 'cud64hfcidjdbvi9gjh4d'
         repository: 'rdbw-frontend'
@@ -38,9 +39,48 @@ stages:
           $(Build.BuildId)
           latest
     - task: Docker@2
+      displayName: Push frontend image to ACR
       inputs:
         containerRegistry: 'cud64hfcidjdbvi9gjh4d'
         repository: 'rdbw-frontend'
+        command: 'push'
+        tags: |
+          $(Build.BuildId)
+          latest
+    - task: Docker@2
+      displayName: Build backend image
+      inputs:
+        containerRegistry: 'cud64hfcidjdbvi9gjh4d'
+        repository: 'rdbw-backend'
+        command: 'build'
+        Dockerfile: '**/Dockerfile.backend'
+        tags: |
+          $(Build.BuildId)
+          latest
+    - task: Docker@2
+      displayName: Push backend image to ACR
+      inputs:
+        containerRegistry: 'cud64hfcidjdbvi9gjh4d'
+        repository: 'rdbw-backend'
+        command: 'push'
+        tags: |
+          $(Build.BuildId)
+          latest
+    - task: Docker@2
+      displayName: Build backend static image
+      inputs:
+        containerRegistry: 'cud64hfcidjdbvi9gjh4d'
+        repository: 'rdbw-backend-static'
+        command: 'build'
+        Dockerfile: '**/Dockerfile.backend.static'
+        tags: |
+          $(Build.BuildId)
+          latest
+    - task: Docker@2
+      displayName: Push backend static image to ACR
+      inputs:
+        containerRegistry: 'cud64hfcidjdbvi9gjh4d'
+        repository: 'rdbw-backend-static'
         command: 'push'
         tags: |
           $(Build.BuildId)
