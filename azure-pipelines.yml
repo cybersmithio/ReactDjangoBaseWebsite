@@ -112,6 +112,7 @@ stages:
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
     - task: KubernetesManifest@0
+      displayName: Deploy backend app
       inputs:
         action: 'deploy'
         kubernetesServiceConnection: 'aksNonProd01_service_connection'
@@ -137,6 +138,7 @@ stages:
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
     - task: KubernetesManifest@0
+      displayName: Deploy frontend app
       inputs:
         action: 'deploy'
         kubernetesServiceConnection: 'aksNonProd01_service_connection'
