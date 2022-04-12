@@ -92,3 +92,60 @@ stages:
         tags: |
           $(Build.BuildId)
           latest
+    - task: KubernetesManifest@0
+      displayName: Deploy the frontend ConfigMap
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksNonProd01_service_connection'
+        namespace: 'rdbw-dev'
+        manifests: '$(Build.SourcesDirectory)/deployments/dev.frontend.configmap.yaml'
+    - task: Kubernetes@1
+      displayName: Delete existing backend app
+      continueOnError: true
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'aksNonProd01_service_connection'
+        namespace: 'rdbw-dev'
+        command: 'delete'
+        useConfigurationFile: true
+        configuration: '$(Build.SourcesDirectory)/deployments/dev.backend.yaml'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksNonProd01_service_connection'
+        namespace: 'rdbw-dev'
+        manifests: '$(Build.SourcesDirectory)/deployments/dev.backend.yaml'
+    - task: KubernetesManifest@0
+      displayName: Deploy the backend ingress
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksNonProd01_service_connection'
+        namespace: 'rdbw-dev'
+        manifests: '$(Build.SourcesDirectory)/deployments/dev.backend.ingress.yaml'
+    - task: Kubernetes@1
+      displayName: Delete existing frontend app
+      continueOnError: true
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'aksNonProd01_service_connection'
+        namespace: 'rdbw-dev'
+        command: 'delete'
+        useConfigurationFile: true
+        configuration: '$(Build.SourcesDirectory)/deployments/dev.frontend.yaml'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksNonProd01_service_connection'
+        namespace: 'rdbw-dev'
+        manifests: '$(Build.SourcesDirectory)/deployments/dev.frontend.yaml'
+    - task: KubernetesManifest@0
+      displayName: Deploy the frontend ingress
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksNonProd01_service_connection'
+        namespace: 'rdbw-dev'
+        manifests: '$(Build.SourcesDirectory)/deployments/dev.frontend.ingress.yaml'
