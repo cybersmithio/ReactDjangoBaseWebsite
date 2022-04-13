@@ -112,7 +112,17 @@
             "scopeName": "aksNonProdSubnet",
             "scopeVnetName": "aksVnet",
             "scopeResourceGroup": "rdbwNonProd"
+          },
+          {
+            "objectType": "keyvaultPolicy",
+            "name": "mncfuivguic87cf7yu53cf8",
+            "id": "",
+            "secretPermissions": [
+              "get"
+            ],
+            "spnName": "azurekeyvaultsecretsprovider-aksnonprod01"
           }
+
         ]
       }
     ]
