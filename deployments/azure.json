@@ -104,6 +104,7 @@
           {
             "objectType": "role",
             "name": "",
+            "id": "",
             "role": "Network Contributor",
             "assigneeType": "aksPrincipal",
             "assigneeName": "aksNonProd01",
@@ -112,6 +113,15 @@
             "scopeName": "aksNonProdSubnet",
             "scopeVnetName": "aksVnet",
             "scopeResourceGroup": "rdbwNonProd"
+          },
+          {
+            "objectType": "keyvaultPolicy",
+            "name": "mncfuivguic87cf7yu53cf8",
+            "id": "",
+            "secretPermissions": [
+              "get"
+            ],
+            "spnName": "azurekeyvaultsecretsprovider-aksnonprod01"
           }
         ]
       }
