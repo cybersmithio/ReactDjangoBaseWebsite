@@ -281,7 +281,10 @@ function DeployAzureObject() {
                 "The private DNS zone link to the virtual network already exists"
             }
         }
-
+        keyvaultPolicy {
+            $spClientId=az ad sp list --display-name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].spnName --query "[].appId" |ConvertFrom-Json
+            az keyvault set-policy -n $name --secret-permissions $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].secretPermissions[0] --spn $spClientId
+        }
         default {
             "Unknown object type: '$objectType'"
             exit

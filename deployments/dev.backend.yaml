@@ -27,6 +27,10 @@ spec:
               memory: 100Mi
           ports:
             - containerPort: 8000
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
           env:
             - name: DJANGO_WEB_SITE_NAME
               value: React Django Template Web Site
@@ -44,21 +48,15 @@ spec:
               value: "api.dev.example.local"
             - name: DJANGO_CORS_ALLOWED_ORIGINS
               value: "http://www.dev.example.local"
-            - name: DJANGO_SENDER_EMAIL
-              valueFrom:
-                secretKeyRef:
-                  name: email
-                  key: sender
-            - name: DJANGO_EMAIL_HOST_USER
-              valueFrom:
-                secretKeyRef:
-                  name: email
-                  key: user
-            - name: DJANGO_EMAIL_HOST_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: email
-                  key: password
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "azure-keyvault-sync"
+            nodePublishSecretRef: # Only required when using service principal mode
+              name: secrets-store-creds # Only required when using service principal mode
 ---
 apiVersion: v1
 kind: Service

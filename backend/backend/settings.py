@@ -179,13 +179,30 @@ if os.getenv('DJANGO_CORS_ALLOW_ALL_ORIGINS') is not None:
 
 WEB_SITE_NAME=os.getenv('DJANGO_WEB_SITE_NAME')
 VERIFICATION_URL=os.getenv('DJANGO_VERIFICATION_URL')
-SENDER_EMAIL=os.getenv('DJANGO_SENDER_EMAIL')
 EMAIL_HOST = os.getenv('DJANGO_EMAIL_HOST')
 EMAIL_PORT = os.getenv('DJANGO_EMAIL_PORT')
-EMAIL_HOST_USER = os.getenv('DJANGO_EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('DJANGO_EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 RESET_PASSWORD_URL=os.getenv('DJANGO_RESET_PASSWORD_URL')
+
+
+try:
+    with open('/mnt/secrets-store/DJANGO-SENDER-EMAIL') as f:
+        SENDER_EMAIL = f.read()
+except:
+    SENDER_EMAIL = os.getenv('DJANGO_SENDER_EMAIL')
+ 
+try:
+    with open('/mnt/secrets-store/DJANGO-EMAIL-HOST-USER') as f:
+        EMAIL_HOST_USER = f.read()
+except:
+    EMAIL_HOST_USER = os.getenv('DJANGO_EMAIL_HOST_USER')
+ 
+try:
+    with open('/mnt/secrets-store/DJANGO-EMAIL-HOST-PASSWORD') as f:
+        EMAIL_HOST_PASSWORD = f.read()
+except:
+    EMAIL_HOST_PASSWORD = os.getenv('DJANGO_EMAIL_HOST_PASSWORD')
+
 
 print("Settings:")
 print(f"CORS_ALLOW_ALL_ORIGINS: {CORS_ALLOW_ALL_ORIGINS}")
