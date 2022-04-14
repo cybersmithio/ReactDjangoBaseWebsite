@@ -5,7 +5,6 @@ from django.contrib.auth.hashers import make_password
 from unittest.mock import patch
 from django.conf import settings 
 import jwt
-from datetime import datetime, timezone, timedelta
 
 User = get_user_model()
  
@@ -192,13 +191,6 @@ class UserAuthenticationTests(UserTestCase):
         self.assertIn("exp", decoded)
         self.assertIn("iat", decoded)
         self.assertTrue((decoded['exp']-decoded['iat'] >= 604800))
-
-    def test_date_and_time_of_last_user_login_is_recorded(self):
-        self.helper_create_user()
-        response = self.client.post('/api/users/token/', data={'email': 'james@example.com', 'password': 'LetMeIn123!'})
-        user = User.objects.get(email='james@example.com')
-        self.assertIsNotNone(user.last_login)
-        self.assertTrue( (user.last_login-datetime.now(timezone.utc)) < timedelta(seconds=2))
 
 class UserProfileTests(UserTestCase):
     def test_user_can_retrieve_their_profile(self):
