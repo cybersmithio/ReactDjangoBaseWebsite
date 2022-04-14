@@ -48,6 +48,16 @@ spec:
               value: "api.dev.example.local"
             - name: DJANGO_CORS_ALLOWED_ORIGINS
               value: "http://www.dev.example.local"
+            - name: DJANGO_EXTERNAL_DB
+              value: "True"
+            - name: POSTGRESQL_DBNAME
+              value: "rdbw-dev"
+            - name: POSTGRESQL_USER
+              value: "jsmith"
+            - name: POSTGRESQL_HOST
+              value: "faff8afc4142.private.postgres.database.azure.com"
+            - name: POSTGRESQL_PORT
+              value: "5432"              
       volumes:
         - name: secrets-store-inline
           csi:

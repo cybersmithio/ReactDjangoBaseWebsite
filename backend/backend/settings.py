@@ -118,12 +118,32 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if( os.getenv('DJANGO_EXTERNAL_DB') is None ):
+    print("Using local SQLite database")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    print("Using PostgreSQL database")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('POSTGRESQL_DBNAME'),
+            'USER': os.getenv('POSTGRESQL_USER'),
+            'PASSWORD': None,
+            'HOST': os.getenv('POSTGRESQL_HOST'),
+            'PORT': os.getenv('POSTGRESQL_PORT'),
+            'OPTIONS': {'sslmode': 'require'},
+        }
+    }
+    try:
+        with open('/mnt/secrets-store/POSTGRESQL-PASSWORD') as f:
+            DATABASES['default']['PASSWORD']=f.read()
+    except:
+        DATABASES['default']['PASSWORD']=os.getenv('POSTGRESQL_PASSWORD')
 
 AUTH_USER_MODEL = 'api.CustomUser'
 
