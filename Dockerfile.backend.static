@@ -5,8 +5,9 @@ COPY backend ./
 RUN apt update && \
     apt remove -y python2 && \
     apt install -y python3 pip && \
-    pip install --no-cache-dir -r requirements.txt
- 
+    grep -v "psycopg2" requirements.txt > requirements.new && \
+    pip install --no-cache-dir -r requirements.new
+     
 RUN python3 manage.py collectstatic --noinput && mv staticfiles /usr/share/nginx/html/
  
 COPY nginx.backend.static.conf /etc/nginx/nginx.conf
