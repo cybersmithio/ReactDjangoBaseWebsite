@@ -121,8 +121,35 @@
               "get"
             ],
             "spnName": "azurekeyvaultsecretsprovider-aksnonprod01"
+          },
+          {
+            "objectType": "subnet",
+            "name": "postgreSqlPrivateSubnet",
+            "id": "",
+            "vnetName": "aksVnet",
+            "addressPrefix": "172.17.2.0/24",
+            "parameters": [
+              "--delegation", "Microsoft.DBforPostgreSQL/flexibleServers"
+            ]
+          },
+          {
+            "objectType": "postgresFlexible",
+            "name": "dirmfyv7rgy8f987v54gf5f3cjhqa7yud63yucsjhsahgviubjhtnej",
+            "id": "",
+            "vnetName": "aksVnet",
+            "vnetResourceGroup": "rdbwNonProd",
+            "vnetSubnetName": "postgreSqlPrivateSubnet",        
+            "parameters": [
+              "--sku-name", "Standard_B1ms",
+              "--tier", "Burstable",
+              "--high-availability", "Disabled",
+              "--storage-size", "32",
+              "--version", "13",
+              "--admin-user", "jsmith",
+              "--admin-password", "ChangeImmediately123!",
+              "--private-dns-zone",  "private.postgres.database.azure.com"
+            ]
           }
-
         ]
       }
     ]
