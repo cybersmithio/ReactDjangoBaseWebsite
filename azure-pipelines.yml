@@ -99,6 +99,13 @@ stages:
         kubernetesServiceConnection: 'aksNonProd01_service_connection'
         namespace: 'rdbw-dev'
         manifests: '$(Build.SourcesDirectory)/deployments/dev.frontend.configmap.yaml'
+    - task: KubernetesManifest@0
+      displayName: Deploy secret provider class
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksNonProd01_service_connection'
+        namespace: 'rdbw-dev'
+        manifests: '$(Build.SourcesDirectory)/deployments/dev.secretproviderclass.yaml'
     - task: Kubernetes@1
       displayName: Delete existing backend app
       continueOnError: true
