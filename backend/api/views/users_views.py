@@ -15,6 +15,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from api.serializers.user_serializers import UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from datetime import datetime, timezone
 
 User = get_user_model()
 
@@ -24,6 +25,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
  
         token['name'] = user.name
+        user.last_login=datetime.now(timezone.utc)
+        user.save()
  
         return token
  
