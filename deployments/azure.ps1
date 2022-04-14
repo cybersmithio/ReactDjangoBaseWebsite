@@ -82,7 +82,8 @@ function DeployAzureObject() {
                 az network vnet subnet create -g $rg `
                     --name $name `
                     --address-prefix $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].addressPrefix `
-                    --vnet-name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetName
+                    --vnet-name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetName `
+                    $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].parameters
                 if( -not $? ) { 
                     "Could not create subnet"
                     exit 
@@ -290,6 +291,27 @@ function DeployAzureObject() {
             }  
             "Granted the permission '$($config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].secretPermissions)' to the keyvault for $($config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].spnName)"
             return
+        }
+        postgresFlexible {
+            $retval=az postgres flexible-server show -g $rg --name $name 2> $null
+            if ( -not $retval ) {
+                "Creating the postgres Flexible Server '$name'"
+                $subnetId=az network vnet subnet show `
+                    -g $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetResourceGroup `
+                    --name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetSubnetName `
+                    --vnet-name $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].vnetName --output json --query id |ConvertFrom-Json
+                "Found subnet ID for postgres Flexible server: $subnetId"
+                $retval=az postgres flexible-server create -g $rg -n $name `
+                    --subnet $subnetId --yes `
+                    $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].parameters
+                if( -not $? ) {
+                    "Could not create the postgres Flexible Server"
+                    exit
+                }            
+            } else {
+                "The postgres Flexible Server is already created"
+            }
+            $id=az postgres flexible-server show -g $rg --name $name --query id |ConvertFrom-Json
         }
         default {
             "Unknown object type: '$objectType'"
