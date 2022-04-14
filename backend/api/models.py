@@ -15,6 +15,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     verified_email = models.BooleanField(default=False)
     verification_email_secret = models.CharField(max_length=100, default=None, null=True)
     reset_password_secret = models.CharField(max_length=100, default=None, null=True)
+    last_login = models.DateTimeField(default=None, null=True)
  
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
