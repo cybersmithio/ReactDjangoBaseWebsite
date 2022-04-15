@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import make_password
 from unittest.mock import patch
 from django.conf import settings 
 import jwt
+from datetime import datetime, timezone, timedelta
 
 User = get_user_model()
  
@@ -140,6 +141,14 @@ class VerifyUserEmailAPITests(UserTestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.post('/api/users/token/', data={'email': 'james@example.com', 'password': 'LetMeIn123!'})
         self.assertEqual(response.status_code, 200)
+
+    def test_date_and_time_the_user_verified_their_email_is_recorded(self, mock_send_mail):
+        self.client.post('/api/users/register/', data={'name': 'James Smith', 'email': 'james@example.com', 'password': 'LetMeIn123!'})
+        user = User.objects.get(email='james@example.com')
+        response = self.client.post(f'/api/users/email/verify/',data={'verification_secret': user.verification_email_secret})
+        user = User.objects.get(email='james@example.com')
+        self.assertIsNotNone(user.date_email_verified)
+        self.assertTrue( (user.date_email_verified-datetime.now(timezone.utc)) < timedelta(seconds=2))
 
 class UserAuthenticationTests(UserTestCase):
     def test_user_can_login(self):
