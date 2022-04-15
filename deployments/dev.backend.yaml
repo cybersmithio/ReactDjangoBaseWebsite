@@ -50,6 +50,8 @@ spec:
               value: "http://www.dev.example.local"
             - name: DJANGO_EXTERNAL_DB
               value: "True"
+            - name: DJANGO_STATIC_URL
+              value: http://static.api.dev.example.local/              
             - name: POSTGRESQL_DBNAME
               value: "rdbw-dev"
             - name: POSTGRESQL_USER

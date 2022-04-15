@@ -107,6 +107,32 @@ stages:
         namespace: 'rdbw-dev'
         manifests: '$(Build.SourcesDirectory)/deployments/dev.secretproviderclass.yaml'
     - task: Kubernetes@1
+      displayName: Delete existing backend static app
+      continueOnError: true
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'aksNonProd01_service_connection'
+        namespace: 'rdbw-dev'
+        command: 'delete'
+        useConfigurationFile: true
+        configuration: '$(Build.SourcesDirectory)/deployments/dev.backend-static.yaml'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
+    - task: KubernetesManifest@0
+      displayName: Deploy backend static app
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksNonProd01_service_connection'
+        namespace: 'rdbw-dev'
+        manifests: '$(Build.SourcesDirectory)/deployments/dev.backend-static.yaml'
+    - task: KubernetesManifest@0
+      displayName: Deploy the backend static ingress
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksNonProd01_service_connection'
+        namespace: 'rdbw-dev'
+        manifests: '$(Build.SourcesDirectory)/deployments/dev.backend-static.ingress.yaml'
+    - task: Kubernetes@1
       displayName: Delete existing backend app
       continueOnError: true
       inputs:
