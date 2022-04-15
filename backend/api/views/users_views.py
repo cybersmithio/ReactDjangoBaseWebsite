@@ -15,6 +15,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from api.serializers.user_serializers import UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from datetime import datetime, timezone
 
 User = get_user_model()
 
@@ -77,6 +78,7 @@ def verifyUser(request):
         user = User.objects.get(verification_email_secret=verification_secret)
         user.verified_email=True
         user.is_active=True
+        user.date_email_verified=datetime.now(timezone.utc)
         user.save()
         return Response({'message': 'user verified'},status=status.HTTP_200_OK)
     except:
