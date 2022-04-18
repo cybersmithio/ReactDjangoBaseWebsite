@@ -1,0 +1,122 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- none
+
+resources:
+- repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '9e7ff68f-1ad2-4ddd-b903-563f1803c2f8'
+  imageRepository: 'rdbw-frontend'
+  containerRegistry: 'cud64hfcidjdbvi9gjh4d.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile.frontend'
+  tag: '$(Build.BuildId)'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: KubernetesManifest@0
+      displayName: Deploy the frontend ConfigMap
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksProd01_service_connection'
+        namespace: 'rdbw-prod'
+        manifests: '$(Build.SourcesDirectory)/deployments/prod.frontend.configmap.yaml'
+    - task: KubernetesManifest@0
+      displayName: Deploy secret provider class
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksProd01_service_connection'
+        namespace: 'rdbw-prod'
+        manifests: '$(Build.SourcesDirectory)/deployments/prod.secretproviderclass.yaml'
+    - task: Kubernetes@1
+      displayName: Delete existing backend static app
+      continueOnError: true
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'aksProd01_service_connection'
+        namespace: 'rdbw-prod'
+        command: 'delete'
+        useConfigurationFile: true
+        configuration: '$(Build.SourcesDirectory)/deployments/prod.backend-static.yaml'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
+    - task: KubernetesManifest@0
+      displayName: Deploy backend static app
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksProd01_service_connection'
+        namespace: 'rdbw-prod'
+        manifests: '$(Build.SourcesDirectory)/deployments/prod.backend-static.yaml'
+    - task: KubernetesManifest@0
+      displayName: Deploy the backend static ingress
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksProd01_service_connection'
+        namespace: 'rdbw-prod'
+        manifests: '$(Build.SourcesDirectory)/deployments/prod.backend-static.ingress.yaml'
+    - task: Kubernetes@1
+      displayName: Delete existing backend app
+      continueOnError: true
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'aksProd01_service_connection'
+        namespace: 'rdbw-prod'
+        command: 'delete'
+        useConfigurationFile: true
+        configuration: '$(Build.SourcesDirectory)/deployments/prod.backend.yaml'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
+    - task: KubernetesManifest@0
+      displayName: Deploy backend app
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksProd01_service_connection'
+        namespace: 'rdbw-prod'
+        manifests: '$(Build.SourcesDirectory)/deployments/prod.backend.yaml'
+    - task: KubernetesManifest@0
+      displayName: Deploy the backend ingress
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksProd01_service_connection'
+        namespace: 'rdbw-prod'
+        manifests: '$(Build.SourcesDirectory)/deployments/prod.backend.ingress.yaml'
+    - task: Kubernetes@1
+      displayName: Delete existing frontend app
+      continueOnError: true
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'aksProd01_service_connection'
+        namespace: 'rdbw-prod'
+        command: 'delete'
+        useConfigurationFile: true
+        configuration: '$(Build.SourcesDirectory)/deployments/prod.frontend.yaml'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
+    - task: KubernetesManifest@0
+      displayName: Deploy frontend app
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksProd01_service_connection'
+        namespace: 'rdbw-prod'
+        manifests: '$(Build.SourcesDirectory)/deployments/prod.frontend.yaml'
+    - task: KubernetesManifest@0
+      displayName: Deploy the frontend ingress
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aksProd01_service_connection'
+        namespace: 'rdbw-prod'
+        manifests: '$(Build.SourcesDirectory)/deployments/prod.frontend.ingress.yaml'
