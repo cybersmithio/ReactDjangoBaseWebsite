@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rdbw-frontend-config
+  namespace: rdbw-prod
+data:
+  config.js: |
+    window._env_ = {
+      BACKEND_URL: "https://api.rdbw.cybersmith.io/",
+    };

@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rdbw-backend-ingress
+  namespace: rdbw-prod
+  annotations:
+    kubernetes.io/ingress.class: external-nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - api.rdbw.cybersmith.io
+    secretName: tls-secret
+  rules:
+    - host: api.rdbw.cybersmith.io
+      http:
+        paths:
+          - path: /(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: rdbw-backend-cluster-service
+                port:
+                  number: 80
