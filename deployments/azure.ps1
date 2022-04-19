@@ -313,6 +313,21 @@ function DeployAzureObject() {
             }
             $id=az postgres flexible-server show -g $rg --name $name --query id |ConvertFrom-Json
         }
+        dnsZone {
+            $retval=az network dns zone show -g $rg --name $name 2> $null
+            if ( -not $retval ) {
+                "Creating the DNS zone '$name'"
+                $retval=az network dns zone create -g $rg -n $name `
+                    $config.azure.resourceGroups[$resourceGroupIndex].objects[$objectIndex].parameters
+                if( -not $? ) {
+                    "Could not create the DNS zone"
+                    exit
+                }            
+            } else {
+                "The DNS zone is already created"
+            }
+            $id=az network dns zone show -g $rg --name $name --query id |ConvertFrom-Json
+        }
         default {
             "Unknown object type: '$objectType'"
             exit
