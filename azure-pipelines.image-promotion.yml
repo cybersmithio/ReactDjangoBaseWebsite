@@ -34,8 +34,8 @@ steps:
   displayName: 'Pull images from non-prod registry.'
 - script: |
     docker tag cud64hfcidjdbvi9gjh4d.azurecr.io/rdbw-frontend:$(tag) nxufkehscig5mqw9cdnbvur.azurecr.io/rdbw-frontend:$(tag)
-    docker tag cud64hfcidjdbvi9gjh4d.azurecr.io/rdbw-backend:$(tag) nxufkehscig5mqw9cdnbvur.azurecr.io/rdbw-backend:$(tag)
-    docker tag cud64hfcidjdbvi9gjh4d.azurecr.io/rdbw-backend-static:$(tag) nxufkehscig5mqw9cdnbvur.azurecr.io/rdbw-backend-static:$(tag)
+    docker tag cud64hfcidjdbvi9gjh4d.azurecr.io/rdbw-backend:$(tag) nxufkehscig5mqw9cdnbvur.azurecr.io/rdbw-frontend:$(tag)
+    docker tag cud64hfcidjdbvi9gjh4d.azurecr.io/rdbw-backend-static:$(tag) nxufkehscig5mqw9cdnbvur.azurecr.io/rdbw-frontend:$(tag)
   displayName: 'Tag images for prod regsitry'
 - script: |
     docker push nxufkehscig5mqw9cdnbvur.azurecr.io/rdbw-frontend:$(tag)
