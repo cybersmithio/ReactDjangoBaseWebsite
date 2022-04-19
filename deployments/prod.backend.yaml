@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rdbw-backend
+  namespace: rdbw-dev
+  labels:
+    app: rdbw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rdbw-backend
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: rdbw-backend
+        tier: backend
+    spec:
+      containers:
+        - name: rdbw-backend
+          image: cud64hfcidjdbvi9gjh4d.azurecr.io/rdbw-backend:latest
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+          env:
+            - name: DJANGO_WEB_SITE_NAME
+              value: React Django Template Web Site
+            - name: DJANGO_VERIFICATION_URL
+              value: http://www.dev.example.local/verifyEmail/
+            - name: DJANGO_RESET_PASSWORD_URL
+              value: http://www.dev.example.local/resetPassword/
+            - name: DJANGO_EMAIL_HOST
+              value: smtp.office365.com
+            - name: DJANGO_EMAIL_PORT
+              value: "587"
+            - name: DJANGO_ADMIN
+              value: "True"
+            - name: DJANGO_ALLOWED_HOSTS
+              value: "api.dev.example.local"
+            - name: DJANGO_CORS_ALLOWED_ORIGINS
+              value: "http://www.dev.example.local"
+            - name: DJANGO_EXTERNAL_DB
+              value: "True"
+            - name: DJANGO_STATIC_URL
+              value: http://static.api.dev.example.local/              
+            - name: POSTGRESQL_DBNAME
+              value: "rdbw-dev"
+            - name: POSTGRESQL_USER
+              value: "jsmith"
+            - name: POSTGRESQL_HOST
+              value: "faff8afc4142.private.postgres.database.azure.com"
+            - name: POSTGRESQL_PORT
+              value: "5432"              
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "azure-keyvault-sync"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rdbw-backend-cluster-service
+  namespace: rdbw-dev
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8000
+  selector:
+    app: rdbw-backend
+    tier: backend
