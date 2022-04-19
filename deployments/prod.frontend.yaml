@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rdbw
-  namespace: rdbw-dev
+  namespace: rdbw-prod
   labels:
     app: rdbw
 spec:
@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: rdbw
-          image: cud64hfcidjdbvi9gjh4d.azurecr.io/rdbw-frontend:latest
+          image: nxufkehscig5mqw9cdnbvur.azurecr.io/rdbw-frontend:63
           imagePullPolicy: Always
           resources:
             requests:
@@ -40,7 +40,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: rdbw-cluster-service
-  namespace: rdbw-dev
+  namespace: rdbw-prod
 spec:
   type: ClusterIP
   ports:
