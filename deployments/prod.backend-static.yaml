@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rdbw-backend-static
+  namespace: rdbw-prod
+  labels:
+    app: rdbw-backend-static
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rdbw-backend-static
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: rdbw-backend-static
+        tier: backend
+    spec:
+      containers:
+        - name: rdbw-backend-static
+          image: nxufkehscig5mqw9cdnbvur.azurecr.io/rdbw-backend-static:63
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rdbw-backend-static-cluster-service
+  namespace: rdbw-prod
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: rdbw-backend-static
+    tier: backend
