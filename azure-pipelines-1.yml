@@ -1,0 +1,69 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: KubernetesManifest@0
+    displayName: Deploy the frontend ConfigMap
+    inputs:
+      action: 'deploy'
+      kubernetesServiceConnection: 'aksProd01_service_connection'
+      namespace: 'rdbw-prod'
+      manifests: '$(Build.SourcesDirectory)/deployments/prod.frontend.configmap.yaml'
+  - task: KubernetesManifest@0
+    displayName: Deploy the secret provider class
+    inputs:
+      action: 'deploy'
+      kubernetesServiceConnection: 'aksProd01_service_connection'
+      namespace: 'rdbw-prod'
+      manifests: '$(Build.SourcesDirectory)/deployments/prod.secretproviderclass.yaml'
+  - task: KubernetesManifest@0
+    displayName: Deploy backend static app
+    inputs:
+      action: 'deploy'
+      kubernetesServiceConnection: 'aksProd01_service_connection'
+      namespace: 'rdbw-prod'
+      manifests: '$(Build.SourcesDirectory)/deployments/prod.backend-static.yaml'
+  - task: KubernetesManifest@0
+    displayName: Deploy backend static ingress
+    inputs:
+      action: 'deploy'
+      kubernetesServiceConnection: 'aksProd01_service_connection'
+      namespace: 'rdbw-prod'
+      manifests: '$(Build.SourcesDirectory)/deployments/prod.backend-static.ingress.yaml'
+  - task: KubernetesManifest@0
+    displayName: Deploy backend app
+    inputs:
+      action: 'deploy'
+      kubernetesServiceConnection: 'aksProd01_service_connection'
+      namespace: 'rdbw-prod'
+      manifests: '$(Build.SourcesDirectory)/deployments/prod.backend.yaml'
+  - task: KubernetesManifest@0
+    displayName: Deploy backend ingress
+    inputs:
+      action: 'deploy'
+      kubernetesServiceConnection: 'aksProd01_service_connection'
+      namespace: 'rdbw-prod'
+      manifests: '$(Build.SourcesDirectory)/deployments/prod.backend.ingress.yaml'
+  - task: KubernetesManifest@0
+    displayName: Deploy frontend app
+    inputs:
+      action: 'deploy'
+      kubernetesServiceConnection: 'aksProd01_service_connection'
+      namespace: 'rdbw-prod'
+      manifests: '$(Build.SourcesDirectory)/deployments/prod.frontend.yaml'
+  - task: KubernetesManifest@0
+    displayName: Deploy frontend ingress
+    inputs:
+      action: 'deploy'
+      kubernetesServiceConnection: 'aksProd01_service_connection'
+      namespace: 'rdbw-prod'
+      manifests: '$(Build.SourcesDirectory)/deployments/prod.frontend.ingress.yaml'
+
