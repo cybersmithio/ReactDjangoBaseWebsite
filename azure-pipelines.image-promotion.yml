@@ -11,9 +11,6 @@ pool:
 
 variables:
   tag: 63
-  dockerRegistryServiceConnection: '9e7ff68f-1ad2-4ddd-b903-563f1803c2f8'
-  containerRegistry: 'cud64hfcidjdbvi9gjh4d.azurecr.io'
-
 
 steps:
 - task: Docker@2
