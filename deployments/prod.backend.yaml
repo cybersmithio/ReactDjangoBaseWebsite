@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: rdbw-backend
-          image: nxufkehscig5mqw9cdnbvur.azurecr.io/rdbw-backend:63
+          image: nxufkehscig5mqw9cdnbvur.azurecr.io/rdbw-backend:129
           imagePullPolicy: Always
           resources:
             requests:
