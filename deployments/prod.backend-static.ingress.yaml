@@ -12,7 +12,7 @@ spec:
   rules:
     - host: static.api.example.local
       http:
-        paths:
+        paths: 
           - path: /(.*)
             pathType: Prefix
             backend:

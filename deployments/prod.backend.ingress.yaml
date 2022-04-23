@@ -9,7 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     cert-manager.io/cluster-issuer: letsencrypt
 spec:
-  ingressClassName: external-nginx
+  ingressClassName: nginx
   tls:
   - hosts:
     - api.rdbw.cybersmith.io
