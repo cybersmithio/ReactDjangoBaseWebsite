@@ -9,8 +9,6 @@ trigger:
 pool:
   vmImage: ubuntu-18.04
 
-
-
 steps:
 - task: Docker@2
   inputs:
