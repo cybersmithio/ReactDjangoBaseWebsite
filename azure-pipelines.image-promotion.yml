@@ -9,8 +9,7 @@ trigger:
 pool:
   vmImage: ubuntu-18.04
 
-variables:
-  tag: 63
+
 
 steps:
 - task: Docker@2
