@@ -1,0 +1,21 @@
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentity
+metadata:
+  annotations:
+    # recommended to use namespaced identites https://azure.github.io/aad-pod-identity/docs/configure/match_pods_in_namespace/
+    aadpodidentity.k8s.io/Behavior: namespaced
+  name: certman-identity
+  namespace: cert-manager # change to your preferred namespace
+spec:
+  type: 0 # MSI
+  resourceID: /subscriptions/5e03a5ca-9d84-43b4-9205-2fcef2a45b58/resourcegroups/rdbwProd/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aksprod01DnsApp # Resource Id From Previous step
+  clientID: e426ac5e-811d-4157-b53f-10b18611d194 # Client Id from previous step
+---
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentityBinding
+metadata:
+  name: certman-id-binding
+  namespace: cert-manager # change to your preferred namespace
+spec:
+  azureIdentity: certman-identity
+  selector: certman-label # This is the label that needs to be set on cert-manager pods
